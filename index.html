@@ -1,0 +1,202 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+  <meta charset="UTF-8">
+  <title>Trải nghiệm Di sản Sơn La WebAR</title>
+
+  <!-- Thư viện A-Frame (dựng không gian 3D trên Web) -->
+  <script src="https://aframe.io/releases/1.4.2/aframe.min.js"></script>
+  <!-- Thư viện MindAR dành riêng cho A-Frame -->
+  <script src="https://cdn.jsdelivr.net/npm/mind-ar@1.2.2/dist/mindar-image-aframe.prod.js"></script>
+
+  <style>
+    body {
+      margin: 0;
+      overflow: hidden;
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    }
+
+    /* Giao diện nút quay lại và thanh trạng thái */
+    #top-bar {
+      position: absolute;
+      top: 15px;
+      left: 15px;
+      right: 15px;
+      z-index: 1000;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      pointer-events: none;
+    }
+    .btn-back {
+      pointer-events: auto;
+      background: rgba(0, 0, 0, 0.65);
+      color: #fff;
+      border: 1px solid rgba(255, 255, 255, 0.4);
+      padding: 8px 14px;
+      border-radius: 20px;
+      text-decoration: none;
+      font-size: 13px;
+      backdrop-filter: blur(4px);
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+    }
+    .status-pill {
+      background: rgba(0, 0, 0, 0.65);
+      color: #ffd54f;
+      padding: 8px 14px;
+      border-radius: 20px;
+      font-size: 12px;
+      font-weight: 500;
+      backdrop-filter: blur(4px);
+    }
+
+    /* Hướng dẫn khi đang tìm thẻ marker */
+    #guide-box {
+      position: absolute;
+      bottom: 25px;
+      left: 50%;
+      transform: translateX(-50%);
+      background: rgba(17, 17, 17, 0.85);
+      color: #fff;
+      padding: 10px 20px;
+      border-radius: 25px;
+      font-size: 13px;
+      text-align: center;
+      z-index: 1000;
+      box-shadow: 0 4px 15px rgba(0,0,0,0.3);
+      border: 1px solid rgba(255,255,255,0.2);
+      max-width: 80%;
+      line-height: 1.4;
+    }
+
+    /* Tùy chỉnh khung quét mặc định của MindAR */
+    .mindar-ui-scanning .scanning {
+      border-color: #4caf50 !important;
+    }
+  </style>
+
+  <script>
+    // Component tùy chỉnh để điều khiển xoay mô hình bằng cảm ứng tay
+    AFRAME.registerComponent('drag-rotate', {
+      init: function () {
+        let isDragging = false;
+        let previousX = 0;
+
+        window.addEventListener('touchstart', (e) => {
+          if (e.touches.length === 1) {
+            isDragging = true;
+            previousX = e.touches[0].clientX;
+          }
+        });
+
+        window.addEventListener('touchmove', (e) => {
+          if (!isDragging || e.touches.length !== 1) return;
+          const deltaX = e.touches[0].clientX - previousX;
+          previousX = e.touches[0].clientX;
+
+          const currentRotation = this.el.getAttribute('rotation');
+          this.el.setAttribute('rotation', {
+            x: currentRotation.x,
+            y: currentRotation.y + deltaX * 0.5,
+            z: currentRotation.z
+          });
+        });
+
+        window.addEventListener('touchend', () => {
+          isDragging = false;
+        });
+      }
+    });
+  </script>
+</head>
+<body>
+
+  <!-- Thanh điều khiển trên cùng -->
+  <div id="top-bar">
+    <a href="index.html" class="btn-back">⬅ Quay lại bản đồ</a>
+    <div id="status" class="status-pill">Đang khởi động camera...</div>
+  </div>
+
+  <div id="guide-box">Hướng camera vào thẻ ảnh di tích trên bàn</div>
+
+  <!-- Không gian AR MindAR + A-Frame -->
+  <!-- 
+    imageTargetSrc: đường dẫn đến file .mind chứa các điểm mốc nhận diện của thẻ ảnh
+  -->
+  <a-scene 
+    mindar-image="imageTargetSrc: ./assets/targets.mind; autoStart: true; uiScanning: yes;" 
+    color-space="sRGB" 
+    renderer="colorManagement: true, physicallyCorrectLights" 
+    vr-mode-ui="enabled: false" 
+    device-orientation-permission-ui="enabled: false">
+    
+    <a-assets>
+      <!-- Khai báo các mô hình 3D (định dạng .glb) -->
+      <a-asset-item id="model-nhasan" src="./assets/models/nhasan.glb"></a-asset-item>
+      <a-asset-item id="model-khenbe" src="./assets/models/khenbe.glb"></a-asset-item>
+    </a-assets>
+
+    <a-camera position="0 0 0" look-controls="enabled: false"></a-camera>
+
+    <!-- 
+      targetIndex: 0 là ảnh đầu tiên trong file targets.mind
+      Khi camera nhận ra thẻ số 0, toàn bộ nội dung trong a-entity này sẽ xuất hiện
+    -->
+    <a-entity id="target-item" mindar-image-target="targetIndex: 0">
+      
+      <!-- 
+        Entity chứa mô hình 3D:
+        - animation: tự động xoay quanh trục Y (360 độ lặp vô tận)
+        - drag-rotate: cho phép học sinh dùng ngón tay vuốt ngang để xoay ngắm các góc
+      -->
+      <a-gltf-model 
+        id="ar-3d-model"
+        src="#model-nhasan" 
+        position="0 0 0.1" 
+        scale="0.25 0.25 0.25" 
+        rotation="90 0 0"
+        drag-rotate
+        animation="property: rotation; to: 90 360 0; loop: true; dur: 12000; easing: linear">
+      </a-gltf-model>
+
+    </a-entity>
+  </a-scene>
+
+  <script>
+    const statusEl = document.getElementById('status');
+    const guideBox = document.getElementById('guide-box');
+    const targetItem = document.getElementById('target-item');
+    const modelEntity = document.getElementById('ar-3d-model');
+
+    // 1. Đọc tham số URL để nạp mô hình phù hợp (ví dụ: ar-viewer.html?model=khenbe)
+    const urlParams = new URLSearchParams(window.location.search);
+    const modelParam = urlParams.get('model');
+    if (modelParam && document.getElementById(`model-${modelParam}`)) {
+      modelEntity.setAttribute('src', `#model-${modelParam}`);
+    }
+
+    // 2. Lắng nghe sự kiện khi nhận diện được hoặc mất dấu thẻ ảnh
+    const sceneEl = document.querySelector('a-scene');
+    
+    sceneEl.addEventListener('arReady', () => {
+      statusEl.textContent = 'Camera đã sẵn sàng';
+      statusEl.style.color = '#81c784';
+    });
+
+    targetItem.addEventListener('targetFound', () => {
+      statusEl.textContent = 'Đã nhận diện hiện vật';
+      statusEl.style.color = '#4caf50';
+      guideBox.textContent = 'Chạm và vuốt để xoay quan sát chi tiết';
+    });
+
+    targetItem.addEventListener('targetLost', () => {
+      statusEl.textContent = 'Đang tìm thẻ ảnh...';
+      statusEl.style.color = '#ffd54f';
+      guideBox.textContent = 'Hãy đưa lại thẻ ảnh vào giữa khung hình';
+    });
+  </script>
+</body>
+</html>
