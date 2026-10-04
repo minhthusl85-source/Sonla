@@ -4,12 +4,8 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Bản đồ số Di tích & Di sản Sơn La</title>
-
-  <!-- Leaflet CSS -->
-  <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" 
-        integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY=" crossorigin="" />
+  <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" crossorigin="" />
   <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700&display=swap">
-
   <style>
     * { box-sizing: border-box; margin: 0; padding: 0; }
     body { font-family: 'Roboto', sans-serif; height: 100vh; display: flex; flex-direction: column; background: #f4f6f8; }
@@ -17,7 +13,6 @@
     header h1 { font-size: 1.05rem; font-weight: 700; }
     header span { font-size: 0.8rem; opacity: 0.9; }
     #map { flex: 1; width: 100%; height: 100%; }
-
     .leaflet-popup-content-wrapper { border-radius: 12px; padding: 4px; box-shadow: 0 4px 16px rgba(0,0,0,0.2); }
     .leaflet-popup-content { margin: 10px; max-width: 270px; line-height: 1.4; }
     .popup-card img { width: 100%; height: 135px; object-fit: cover; border-radius: 8px; margin-bottom: 8px; }
@@ -40,113 +35,121 @@
 
   <div id="map"></div>
 
-  <!-- Leaflet JS -->
-  <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js" 
-          integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo=" crossorigin=""></script>
+  <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js" crossorigin=""></script>
 
   <script>
-  const historicalSites = [
-  {
-    id: "nhatusonla",
-    name: "Di tích Quốc gia đặc biệt Nhà tù Sơn La",
-    category: "Di tích Lịch sử Cách mạng",
-    coords: [21.3255, 103.9085],
-    image: "https://upload.wikimedia.org/wikipedia/commons/thumb/c/c5/Nha_tu_Son_La.jpg/640px-Nha_tu_Son_La.jpg",
-    description: "Xây dựng năm 1908 trên đồi Khau Cả. Nơi tôi luyện ý chí kiên trung của các chiến sĩ cách mạng, gắn liền với cây đào Tô Hiệu.",
-    audioVi: "https://www.soundhelix.com/examples/mp3/SoundHelix-Song-1.mp3",
-    arLink: "ar-viewer.html?model=nhasan"
-  },
-  {
-    id: "deophadin",
-    name: "Di tích lịch sử Đèo Pha Đin (Thuận Châu)",
-    category: "Di tích Lịch sử Quốc gia",
-    coords: [21.5728, 103.5042],
-    image: "https://upload.wikimedia.org/wikipedia/commons/thumb/6/67/Deo_Pha_Din.jpg/640px-Deo_Pha_Din.jpg",
-    description: "Tuyến giao thông huyết mạch tiếp viện vũ khí, lương thực cho chiến dịch Điện Biên Phủ lịch sử năm 1954.",
-    audioVi: "https://www.soundhelix.com/examples/mp3/SoundHelix-Song-2.mp3",
-    arLink: "ar-viewer.html?model=nhasan"
-  },
-  {
-    id: "ngabaconoi",
-    name: "Di tích lịch sử Ngã ba Cò Nòi (Mai Sơn)",
-    category: "Di tích Lịch sử Quốc gia",
-    coords: [21.1415, 104.0322],
-    image: "https://upload.wikimedia.org/wikipedia/commons/thumb/0/0c/Tuong_dai_liet_si_Co_Noi.jpg/640px-Tuong_dai_liet_si_Co_Noi.jpg",
-    description: "Tọa độ lửa anh dũng ghi dấu sự hy sinh kiên cường của lực lượng Thanh niên xung phong trong kháng chiến chống Pháp.",
-    audioVi: "https://www.soundhelix.com/examples/mp3/SoundHelix-Song-3.mp3",
-    arLink: "ar-viewer.html?model=nhasan"
-  },
-  {
-    id: "thuydiensonla",
-    name: "Công trình Thủy điện Sơn La (Mường La)",
-    category: "Công trình Trọng điểm Quốc gia",
-    coords: [21.4965, 103.9967],
-    image: "https://upload.wikimedia.org/wikipedia/commons/thumb/4/41/Son_La_Dam.jpg/640px-Son_La_Dam.jpg",
-    description: "Nhà máy thủy điện lớn nhất Đông Nam Á, biểu tượng của ý chí chinh phục dòng sông Đà phục vụ đất nước.",
-    audioVi: "https://www.soundhelix.com/examples/mp3/SoundHelix-Song-1.mp3",
-    arLink: "ar-viewer.html?model=nhasan"
-  },
-  {
-    id: "thapmuongbam",
-    name: "Tháp cổ Mường Bám (Thuận Châu)",
-    category: "Di tích Kiến trúc - Nghệ thuật",
-    coords: [21.2891, 103.4567],
-    image: "https://images.unsplash.com/photo-1548013146-72479768bada?w=500&auto=format&fit=crop&q=60",
-    description: "Quần thể tháp cổ mang đậm phong cách kiến trúc bản địa, minh chứng cho sự giao thoa văn hóa Thái - Lào cổ.",
-    audioVi: "https://www.soundhelix.com/examples/mp3/SoundHelix-Song-2.mp3",
-    arLink: "ar-viewer.html?model=nhasan"
-  },
-  {
-    id: "rungkhoangsan",
-    name: "Rừng thông Bản Áng (Mộc Châu)",
-    category: "Danh lam Thắng cảnh",
-    coords: [20.8306, 104.6468],
-    image: "https://images.unsplash.com/photo-1506744038136-46273834b3fb?w=500&auto=format&fit=crop&q=60",
-    description: "Hồ nước trong xanh soi bóng rừng thông xanh ngắt và văn hóa truyền thống đặc sắc của người Thái bản Áng.",
-    audioVi: "https://www.soundhelix.com/examples/mp3/SoundHelix-Song-3.mp3",
-    arLink: "ar-viewer.html?model=nhasan"
-  },
-  {
-    id: "thacdaiyem",
-    name: "Thác Dải Yếm (Mộc Châu)",
-    category: "Danh lam Thắng cảnh",
-    coords: [20.8262, 104.6198],
-    image: "https://images.unsplash.com/photo-1432405972618-c60b0225b8f9?w=500&auto=format&fit=crop&q=60",
-    description: "Dòng thác gắn liền với câu chuyện tình thủy chung của người con gái Thái, thắng cảnh kỳ vĩ giữa cao nguyên.",
-    audioVi: "https://www.soundhelix.com/examples/mp3/SoundHelix-Song-1.mp3",
-    arLink: "ar-viewer.html?model=nhasan"
-  },
-  {
-    id: "dinh-taxua",
-    name: "Đỉnh Tà Xùa (Bắc Yên)",
-    category: "Thiên đường Mây Vùng cao",
-    coords: [21.2667, 104.4667],
-    image: "https://images.unsplash.com/photo-1507525428034-b723cf961d3e?w=500&auto=format&fit=crop&q=60",
-    description: "Dãy núi hùng vĩ nổi tiếng với 'Sống lưng khủng long' quanh năm mây ngàn bao phủ, nét đặc trưng của vùng cao Bắc Yên.",
-    audioVi: "https://www.soundhelix.com/examples/mp3/SoundHelix-Song-2.mp3",
-    arLink: "ar-viewer.html?model=nhasan"
-  },
-  {
-    id: "hangdoimocchau",
-    name: "Hang Dơi / Động Sơn Mộc Hương (Mộc Châu)",
-    category: "Di tích Danh thắng Quốc gia",
-    coords: [20.8492, 104.6367],
-    image: "https://images.unsplash.com/photo-1518709268805-4e9042af9f23?w=500&auto=format&fit=crop&q=60",
-    description: "Mệnh danh là 'Tây thiên đệ nhất động' với hệ thống thạch nhũ tự nhiên kỳ ảo.",
-    audioVi: "https://www.soundhelix.com/examples/mp3/SoundHelix-Song-3.mp3",
-    arLink: "ar-viewer.html?model=nhasan"
-  },
-  {
-    id: "cau-bach-long",
-    name: "Cầu kính Bạch Long (Mộc Châu)",
-    category: "Điểm đến Hiện đại",
-    coords: [20.8711, 104.5764],
-    image: "https://images.unsplash.com/photo-1513836279014-a89f7a76ae86?w=500&auto=format&fit=crop&q=60",
-    description: "Cầu kính đi bộ dài nhất thế giới được công nhận kỷ lục Guinness, biểu tượng du lịch hiện đại của Sơn La.",
-    audioVi: "https://www.soundhelix.com/examples/mp3/SoundHelix-Song-1.mp3",
-    arLink: "ar-viewer.html?model=nhasan"
-  }
-];
+    // BƯỚC KHỞI TẠO BẢN ĐỒ BỊ THIẾU TRƯỚC ĐÓ
+    const sonLaCoords = [21.3283, 103.9188];
+    const map = L.map('map').setView(sonLaCoords, 8);
+    L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+      maxZoom: 18,
+      attribution: '&copy; OpenStreetMap'
+    }).addTo(map);
+
+    // DANH SÁCH 10 ĐỊA ĐIỂM
+    const historicalSites = [
+      {
+        id: "nhatusonla",
+        name: "Di tích Quốc gia đặc biệt Nhà tù Sơn La",
+        category: "Di tích Lịch sử Cách mạng",
+        coords: [21.3255, 103.9085],
+        image: "https://upload.wikimedia.org/wikipedia/commons/thumb/c/c5/Nha_tu_Son_La.jpg/640px-Nha_tu_Son_La.jpg",
+        description: "Xây dựng năm 1908 trên đồi Khau Cả. Nơi tôi luyện ý chí kiên trung của các chiến sĩ cách mạng, gắn liền với cây đào Tô Hiệu.",
+        audioVi: "https://www.soundhelix.com/examples/mp3/SoundHelix-Song-1.mp3",
+        arLink: "ar-viewer.html?model=nhasan"
+      },
+      {
+        id: "deophadin",
+        name: "Di tích lịch sử Đèo Pha Đin (Thuận Châu)",
+        category: "Di tích Lịch sử Quốc gia",
+        coords: [21.5728, 103.5042],
+        image: "https://upload.wikimedia.org/wikipedia/commons/thumb/6/67/Deo_Pha_Din.jpg/640px-Deo_Pha_Din.jpg",
+        description: "Tuyến giao thông huyết mạch tiếp viện vũ khí, lương thực cho chiến dịch Điện Biên Phủ lịch sử năm 1954.",
+        audioVi: "https://www.soundhelix.com/examples/mp3/SoundHelix-Song-2.mp3",
+        arLink: "ar-viewer.html?model=nhasan"
+      },
+      {
+        id: "ngabaconoi",
+        name: "Di tích lịch sử Ngã ba Cò Nòi (Mai Sơn)",
+        category: "Di tích Lịch sử Quốc gia",
+        coords: [21.1415, 104.0322],
+        image: "https://upload.wikimedia.org/wikipedia/commons/thumb/0/0c/Tuong_dai_liet_si_Co_Noi.jpg/640px-Tuong_dai_liet_si_Co_Noi.jpg",
+        description: "Tọa độ lửa anh dũng ghi dấu sự hy sinh kiên cường của lực lượng Thanh niên xung phong trong kháng chiến chống Pháp.",
+        audioVi: "https://www.soundhelix.com/examples/mp3/SoundHelix-Song-3.mp3",
+        arLink: "ar-viewer.html?model=nhasan"
+      },
+      {
+        id: "thuydiensonla",
+        name: "Công trình Thủy điện Sơn La (Mường La)",
+        category: "Công trình Trọng điểm Quốc gia",
+        coords: [21.4965, 103.9967],
+        image: "https://upload.wikimedia.org/wikipedia/commons/thumb/4/41/Son_La_Dam.jpg/640px-Son_La_Dam.jpg",
+        description: "Nhà máy thủy điện lớn nhất Đông Nam Á, biểu tượng của ý chí chinh phục dòng sông Đà phục vụ đất nước.",
+        audioVi: "https://www.soundhelix.com/examples/mp3/SoundHelix-Song-1.mp3",
+        arLink: "ar-viewer.html?model=nhasan"
+      },
+      {
+        id: "thapmuongbam",
+        name: "Tháp cổ Mường Bám (Thuận Châu)",
+        category: "Di tích Kiến trúc - Nghệ thuật",
+        coords: [21.2891, 103.4567],
+        image: "https://images.unsplash.com/photo-1548013146-72479768bada?w=500&auto=format&fit=crop&q=60",
+        description: "Quần thể tháp cổ mang đậm phong cách kiến trúc bản địa, minh chứng cho sự giao thoa văn hóa Thái - Lào cổ.",
+        audioVi: "https://www.soundhelix.com/examples/mp3/SoundHelix-Song-2.mp3",
+        arLink: "ar-viewer.html?model=nhasan"
+      },
+      {
+        id: "rungkhoangsan",
+        name: "Rừng thông Bản Áng (Mộc Châu)",
+        category: "Danh lam Thắng cảnh",
+        coords: [20.8306, 104.6468],
+        image: "https://images.unsplash.com/photo-1506744038136-46273834b3fb?w=500&auto=format&fit=crop&q=60",
+        description: "Hồ nước trong xanh soi bóng rừng thông xanh ngắt và văn hóa truyền thống đặc sắc của người Thái bản Áng.",
+        audioVi: "https://www.soundhelix.com/examples/mp3/SoundHelix-Song-3.mp3",
+        arLink: "ar-viewer.html?model=nhasan"
+      },
+      {
+        id: "thacdaiyem",
+        name: "Thác Dải Yếm (Mộc Châu)",
+        category: "Danh lam Thắng cảnh",
+        coords: [20.8262, 104.6198],
+        image: "https://images.unsplash.com/photo-1432405972618-c60b0225b8f9?w=500&auto=format&fit=crop&q=60",
+        description: "Dòng thác gắn liền với câu chuyện tình thủy chung của người con gái Thái, thắng cảnh kỳ vĩ giữa cao nguyên.",
+        audioVi: "https://www.soundhelix.com/examples/mp3/SoundHelix-Song-1.mp3",
+        arLink: "ar-viewer.html?model=nhasan"
+      },
+      {
+        id: "dinh-taxua",
+        name: "Đỉnh Tà Xùa (Bắc Yên)",
+        category: "Thiên đường Mây Vùng cao",
+        coords: [21.2667, 104.4667],
+        image: "https://images.unsplash.com/photo-1507525428034-b723cf961d3e?w=500&auto=format&fit=crop&q=60",
+        description: "Dãy núi hùng vĩ nổi tiếng với 'Sống lưng khủng long' quanh năm mây ngàn bao phủ, nét đặc trưng của vùng cao Bắc Yên.",
+        audioVi: "https://www.soundhelix.com/examples/mp3/SoundHelix-Song-2.mp3",
+        arLink: "ar-viewer.html?model=nhasan"
+      },
+      {
+        id: "hangdoimocchau",
+        name: "Hang Dơi / Động Sơn Mộc Hương (Mộc Châu)",
+        category: "Di tích Danh thắng Quốc gia",
+        coords: [20.8492, 104.6367],
+        image: "https://images.unsplash.com/photo-1518709268805-4e9042af9f23?w=500&auto=format&fit=crop&q=60",
+        description: "Mệnh danh là 'Tây thiên đệ nhất động' với hệ thống thạch nhũ tự nhiên kỳ ảo.",
+        audioVi: "https://www.soundhelix.com/examples/mp3/SoundHelix-Song-3.mp3",
+        arLink: "ar-viewer.html?model=nhasan"
+      },
+      {
+        id: "cau-bach-long",
+        name: "Cầu kính Bạch Long (Mộc Châu)",
+        category: "Điểm đến Hiện đại",
+        coords: [20.8711, 104.5764],
+        image: "https://images.unsplash.com/photo-1513836279014-a89f7a76ae86?w=500&auto=format&fit=crop&q=60",
+        description: "Cầu kính đi bộ dài nhất thế giới được công nhận kỷ lục Guinness, biểu tượng du lịch hiện đại của Sơn La.",
+        audioVi: "https://www.soundhelix.com/examples/mp3/SoundHelix-Song-1.mp3",
+        arLink: "ar-viewer.html?model=nhasan"
+      }
+    ];
+
     historicalSites.forEach(site => {
       const popupHtml = `
         <div class="popup-card">
