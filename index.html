@@ -1,201 +1,112 @@
 <!DOCTYPE html>
 <html lang="vi">
 <head>
-  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
   <meta charset="UTF-8">
-  <title>Trải nghiệm Di sản Sơn La WebAR</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Bản đồ số Di tích & Di sản Sơn La</title>
 
-  <!-- Thư viện A-Frame (dựng không gian 3D trên Web) -->
-  <script src="https://aframe.io/releases/1.4.2/aframe.min.js"></script>
-  <!-- Thư viện MindAR dành riêng cho A-Frame -->
-  <script src="https://cdn.jsdelivr.net/npm/mind-ar@1.2.2/dist/mindar-image-aframe.prod.js"></script>
+  <!-- Leaflet CSS -->
+  <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" 
+        integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY=" crossorigin="" />
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700&display=swap">
 
   <style>
-    body {
-      margin: 0;
-      overflow: hidden;
-      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-    }
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body { font-family: 'Roboto', sans-serif; height: 100vh; display: flex; flex-direction: column; background: #f4f6f8; }
+    header { background: #1b5e20; color: #fff; padding: 12px 16px; box-shadow: 0 2px 6px rgba(0,0,0,0.15); z-index: 1000; }
+    header h1 { font-size: 1.05rem; font-weight: 700; }
+    header span { font-size: 0.8rem; opacity: 0.9; }
+    #map { flex: 1; width: 100%; height: 100%; }
 
-    /* Giao diện nút quay lại và thanh trạng thái */
-    #top-bar {
-      position: absolute;
-      top: 15px;
-      left: 15px;
-      right: 15px;
-      z-index: 1000;
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      pointer-events: none;
-    }
-    .btn-back {
-      pointer-events: auto;
-      background: rgba(0, 0, 0, 0.65);
-      color: #fff;
-      border: 1px solid rgba(255, 255, 255, 0.4);
-      padding: 8px 14px;
-      border-radius: 20px;
-      text-decoration: none;
-      font-size: 13px;
-      backdrop-filter: blur(4px);
-      display: inline-flex;
-      align-items: center;
-      gap: 6px;
-    }
-    .status-pill {
-      background: rgba(0, 0, 0, 0.65);
-      color: #ffd54f;
-      padding: 8px 14px;
-      border-radius: 20px;
-      font-size: 12px;
-      font-weight: 500;
-      backdrop-filter: blur(4px);
-    }
-
-    /* Hướng dẫn khi đang tìm thẻ marker */
-    #guide-box {
-      position: absolute;
-      bottom: 25px;
-      left: 50%;
-      transform: translateX(-50%);
-      background: rgba(17, 17, 17, 0.85);
-      color: #fff;
-      padding: 10px 20px;
-      border-radius: 25px;
-      font-size: 13px;
-      text-align: center;
-      z-index: 1000;
-      box-shadow: 0 4px 15px rgba(0,0,0,0.3);
-      border: 1px solid rgba(255,255,255,0.2);
-      max-width: 80%;
-      line-height: 1.4;
-    }
-
-    /* Tùy chỉnh khung quét mặc định của MindAR */
-    .mindar-ui-scanning .scanning {
-      border-color: #4caf50 !important;
-    }
+    .leaflet-popup-content-wrapper { border-radius: 12px; padding: 4px; box-shadow: 0 4px 16px rgba(0,0,0,0.2); }
+    .leaflet-popup-content { margin: 10px; max-width: 270px; line-height: 1.4; }
+    .popup-card img { width: 100%; height: 135px; object-fit: cover; border-radius: 8px; margin-bottom: 8px; }
+    .popup-tag { display: inline-block; font-size: 0.7rem; font-weight: 600; text-transform: uppercase; padding: 2px 6px; border-radius: 4px; background: #e8f5e9; color: #2e7d32; margin-bottom: 4px; }
+    .popup-title { font-size: 1rem; font-weight: 700; color: #212121; margin-bottom: 4px; }
+    .popup-desc { font-size: 0.85rem; color: #424242; margin-bottom: 8px; text-align: justify; }
+    .audio-block { background: #fafafa; border: 1px solid #eeeeee; border-radius: 8px; padding: 6px; margin-bottom: 8px; }
+    .audio-block label { font-size: 0.72rem; font-weight: 600; color: #616161; display: block; margin-bottom: 3px; }
+    .audio-block audio { width: 100%; height: 30px; }
+    .ar-btn { display: block; width: 100%; text-align: center; background: #e65100; color: #fff; padding: 8px; border-radius: 6px; text-decoration: none; font-size: 0.82rem; font-weight: 600; }
+    .ar-btn:hover { background: #bf360c; }
   </style>
-
-  <script>
-    // Component tùy chỉnh để điều khiển xoay mô hình bằng cảm ứng tay
-    AFRAME.registerComponent('drag-rotate', {
-      init: function () {
-        let isDragging = false;
-        let previousX = 0;
-
-        window.addEventListener('touchstart', (e) => {
-          if (e.touches.length === 1) {
-            isDragging = true;
-            previousX = e.touches[0].clientX;
-          }
-        });
-
-        window.addEventListener('touchmove', (e) => {
-          if (!isDragging || e.touches.length !== 1) return;
-          const deltaX = e.touches[0].clientX - previousX;
-          previousX = e.touches[0].clientX;
-
-          const currentRotation = this.el.getAttribute('rotation');
-          this.el.setAttribute('rotation', {
-            x: currentRotation.x,
-            y: currentRotation.y + deltaX * 0.5,
-            z: currentRotation.z
-          });
-        });
-
-        window.addEventListener('touchend', () => {
-          isDragging = false;
-        });
-      }
-    });
-  </script>
 </head>
 <body>
 
-  <!-- Thanh điều khiển trên cùng -->
-  <div id="top-bar">
-    <a href="index.html" class="btn-back">⬅ Quay lại bản đồ</a>
-    <div id="status" class="status-pill">Đang khởi động camera...</div>
-  </div>
+  <header>
+    <h1>Di sản & Di tích Lịch sử Sơn La</h1>
+    <span>Sản phẩm STEM - Giáo dục địa phương & Tin học THPT</span>
+  </header>
 
-  <div id="guide-box">Hướng camera vào thẻ ảnh di tích trên bàn</div>
+  <div id="map"></div>
 
-  <!-- Không gian AR MindAR + A-Frame -->
-  <!-- 
-    imageTargetSrc: đường dẫn đến file .mind chứa các điểm mốc nhận diện của thẻ ảnh
-  -->
-  <a-scene 
-    mindar-image="imageTargetSrc: ./assets/targets.mind; autoStart: true; uiScanning: yes;" 
-    color-space="sRGB" 
-    renderer="colorManagement: true, physicallyCorrectLights" 
-    vr-mode-ui="enabled: false" 
-    device-orientation-permission-ui="enabled: false">
-    
-    <a-assets>
-      <!-- Khai báo các mô hình 3D (định dạng .glb) -->
-      <a-asset-item id="model-nhasan" src="./assets/models/nhasan.glb"></a-asset-item>
-      <a-asset-item id="model-khenbe" src="./assets/models/khenbe.glb"></a-asset-item>
-    </a-assets>
-
-    <a-camera position="0 0 0" look-controls="enabled: false"></a-camera>
-
-    <!-- 
-      targetIndex: 0 là ảnh đầu tiên trong file targets.mind
-      Khi camera nhận ra thẻ số 0, toàn bộ nội dung trong a-entity này sẽ xuất hiện
-    -->
-    <a-entity id="target-item" mindar-image-target="targetIndex: 0">
-      
-      <!-- 
-        Entity chứa mô hình 3D:
-        - animation: tự động xoay quanh trục Y (360 độ lặp vô tận)
-        - drag-rotate: cho phép học sinh dùng ngón tay vuốt ngang để xoay ngắm các góc
-      -->
-      <a-gltf-model 
-        id="ar-3d-model"
-        src="#model-nhasan" 
-        position="0 0 0.1" 
-        scale="0.25 0.25 0.25" 
-        rotation="90 0 0"
-        drag-rotate
-        animation="property: rotation; to: 90 360 0; loop: true; dur: 12000; easing: linear">
-      </a-gltf-model>
-
-    </a-entity>
-  </a-scene>
+  <!-- Leaflet JS -->
+  <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js" 
+          integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo=" crossorigin=""></script>
 
   <script>
-    const statusEl = document.getElementById('status');
-    const guideBox = document.getElementById('guide-box');
-    const targetItem = document.getElementById('target-item');
-    const modelEntity = document.getElementById('ar-3d-model');
+    const sonLaCoords = [21.3283, 103.9188];
+    const map = L.map('map').setView(sonLaCoords, 9);
 
-    // 1. Đọc tham số URL để nạp mô hình phù hợp (ví dụ: ar-viewer.html?model=khenbe)
-    const urlParams = new URLSearchParams(window.location.search);
-    const modelParam = urlParams.get('model');
-    if (modelParam && document.getElementById(`model-${modelParam}`)) {
-      modelEntity.setAttribute('src', `#model-${modelParam}`);
-    }
+    L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+      maxZoom: 18,
+      attribution: '&copy; OpenStreetMap'
+    }).addTo(map);
 
-    // 2. Lắng nghe sự kiện khi nhận diện được hoặc mất dấu thẻ ảnh
-    const sceneEl = document.querySelector('a-scene');
-    
-    sceneEl.addEventListener('arReady', () => {
-      statusEl.textContent = 'Camera đã sẵn sàng';
-      statusEl.style.color = '#81c784';
-    });
+    const historicalSites = [
+      {
+        id: "nhatusonla",
+        name: "Di tích Quốc gia đặc biệt Nhà tù Sơn La",
+        category: "Di tích Lịch sử Cách mạng",
+        coords: [21.3255, 103.9085],
+        image: "https://upload.wikimedia.org/wikipedia/commons/thumb/c/c5/Nha_tu_Son_La.jpg/640px-Nha_tu_Son_La.jpg",
+        description: "Xây dựng năm 1908 trên đồi Khau Cả. Nơi tôi luyện ý chí kiên trung của các chiến sĩ cách mạng Việt Nam.",
+        audioVi: "https://www.soundhelix.com/examples/mp3/SoundHelix-Song-1.mp3",
+        arLink: "ar-viewer.html?model=nhasan"
+      },
+      {
+        id: "deophadin",
+        name: "Di tích lịch sử Đèo Pha Đin",
+        category: "Di tích Lịch sử Quốc gia",
+        coords: [21.5728, 103.5042],
+        image: "https://upload.wikimedia.org/wikipedia/commons/thumb/6/67/Deo_Pha_Din.jpg/640px-Deo_Pha_Din.jpg",
+        description: "Tuyến giao thông huyết mạch tiếp viện vũ khí, lương thực cho chiến dịch Điện Biên Phủ năm 1954.",
+        audioVi: "https://www.soundhelix.com/examples/mp3/SoundHelix-Song-2.mp3",
+        arLink: "ar-viewer.html?model=nhasan"
+      },
+      {
+        id: "ngabaconoi",
+        name: "Ngã ba Cò Nòi (Mai Sơn)",
+        category: "Di tích Lịch sử Quốc gia",
+        coords: [21.1415, 104.0322],
+        image: "https://upload.wikimedia.org/wikipedia/commons/thumb/0/0c/Tuong_dai_liet_si_Co_Noi.jpg/640px-Tuong_dai_liet_si_Co_Noi.jpg",
+        description: "Tọa độ lửa anh dũng của lực lượng Thanh niên xung phong bảo đảm giao thông thời kỳ kháng chiến.",
+        audioVi: "https://www.soundhelix.com/examples/mp3/SoundHelix-Song-3.mp3",
+        arLink: "ar-viewer.html?model=nhasan"
+      }
+    ];
 
-    targetItem.addEventListener('targetFound', () => {
-      statusEl.textContent = 'Đã nhận diện hiện vật';
-      statusEl.style.color = '#4caf50';
-      guideBox.textContent = 'Chạm và vuốt để xoay quan sát chi tiết';
-    });
-
-    targetItem.addEventListener('targetLost', () => {
-      statusEl.textContent = 'Đang tìm thẻ ảnh...';
-      statusEl.style.color = '#ffd54f';
-      guideBox.textContent = 'Hãy đưa lại thẻ ảnh vào giữa khung hình';
+    historicalSites.forEach(site => {
+      const popupHtml = `
+        <div class="popup-card">
+          <img src="${site.image}" alt="${site.name}">
+          <span class="popup-tag">${site.category}</span>
+          <h2 class="popup-title">${site.name}</h2>
+          <p class="popup-desc">${site.description}</p>
+          <div class="audio-block">
+            <label>🎧 Thuyết minh âm thanh:</label>
+            <audio controls preload="none">
+              <source src="${site.audioVi}" type="audio/mpeg">
+            </audio>
+          </div>
+          <a href="${site.arLink}" class="ar-btn">📷 Trải nghiệm vật phẩm 3D / AR</a>
+        </div>
+      `;
+      const marker = L.marker(site.coords).addTo(map);
+      marker.bindPopup(popupHtml);
+      marker.on('popupclose', () => {
+        document.querySelectorAll('audio').forEach(a => { a.pause(); a.currentTime = 0; });
+      });
     });
   </script>
 </body>
