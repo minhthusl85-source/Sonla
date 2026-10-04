@@ -1,0 +1,239 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Bản đồ số Di tích & Di sản Sơn La</title>
+
+  <!-- Leaflet CSS -->
+  <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" 
+        integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY=" crossorigin="" />
+
+  <!-- Google Fonts & Icons -->
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700&display=swap">
+
+  <style>
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+    body {
+      font-family: 'Roboto', sans-serif;
+      height: 100vh;
+      display: flex;
+      flex-direction: column;
+      background: #f4f6f8;
+    }
+    header {
+      background: #1b5e20;
+      color: #ffffff;
+      padding: 12px 16px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      box-shadow: 0 2px 6px rgba(0, 0, 0, 0.15);
+      z-index: 1000;
+    }
+    header h1 {
+      font-size: 1.05rem;
+      font-weight: 700;
+      letter-spacing: 0.3px;
+    }
+    header span {
+      font-size: 0.8rem;
+      opacity: 0.9;
+    }
+    #map {
+      flex: 1;
+      width: 100%;
+      height: 100%;
+    }
+
+    /* Tùy chỉnh Popup Leaflet */
+    .leaflet-popup-content-wrapper {
+      border-radius: 12px;
+      padding: 4px;
+      box-shadow: 0 4px 16px rgba(0,0,0,0.2);
+    }
+    .leaflet-popup-content {
+      margin: 10px;
+      max-width: 270px;
+      line-height: 1.4;
+    }
+    .popup-card img {
+      width: 100%;
+      height: 140px;
+      object-fit: cover;
+      border-radius: 8px;
+      margin-bottom: 8px;
+    }
+    .popup-tag {
+      display: inline-block;
+      font-size: 0.7rem;
+      font-weight: 600;
+      text-transform: uppercase;
+      padding: 2px 6px;
+      border-radius: 4px;
+      background: #e8f5e9;
+      color: #2e7d32;
+      margin-bottom: 4px;
+    }
+    .popup-title {
+      font-size: 1rem;
+      font-weight: 700;
+      color: #212121;
+      margin-bottom: 4px;
+    }
+    .popup-desc {
+      font-size: 0.85rem;
+      color: #424242;
+      margin-bottom: 10px;
+      text-align: justify;
+    }
+    .audio-block {
+      background: #fafafa;
+      border: 1px solid #eeeeee;
+      border-radius: 8px;
+      padding: 8px;
+      margin-bottom: 8px;
+    }
+    .audio-block label {
+      font-size: 0.75rem;
+      font-weight: 600;
+      color: #616161;
+      display: block;
+      margin-bottom: 4px;
+    }
+    .audio-block audio {
+      width: 100%;
+      height: 32px;
+    }
+    .ar-btn {
+      display: block;
+      width: 100%;
+      text-align: center;
+      background: #e65100;
+      color: #ffffff;
+      padding: 8px;
+      border-radius: 6px;
+      text-decoration: none;
+      font-size: 0.82rem;
+      font-weight: 600;
+      transition: background 0.2s;
+    }
+    .ar-btn:hover {
+      background: #bf360c;
+    }
+  </style>
+</head>
+<body>
+
+  <header>
+    <div>
+      <h1>Di sản & Di tích Lịch sử Sơn La</h1>
+      <span>Sản phẩm STEM - Giáo dục địa phương & Tin học</span>
+    </div>
+  </header>
+
+  <div id="map"></div>
+
+  <!-- Leaflet JS -->
+  <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js" 
+          integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo=" crossorigin=""></script>
+
+  <script>
+    // 1. Khởi tạo bản đồ tại trung tâm tỉnh Sơn La
+    const sonLaCoords = [21.3283, 103.9188]; // Tọa độ TP. Sơn La
+    const map = L.map('map').setView(sonLaCoords, 9);
+
+    // 2. Tải bản đồ nền OpenStreetMap
+    L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+      maxZoom: 18,
+      attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> đóng góp'
+    }).addTo(map);
+
+    // 3. Cơ sở dữ liệu các điểm di tích & danh thắng Sơn La
+    const historicalSites = [
+      {
+        id: "nhatusonla",
+        name: "Di tích Quốc gia đặc biệt Nhà tù Sơn La",
+        category: "Di tích Lịch sử Cách mạng",
+        coords: [21.3255, 103.9085],
+        image: "https://upload.wikimedia.org/wikipedia/commons/thumb/c/c5/Nha_tu_Son_La.jpg/640px-Nha_tu_Son_La.jpg",
+        description: "Được thực dân Pháp xây dựng năm 1908 trên đỉnh đồi Khau Cả. Nơi đây từng giam giữ các chiến sĩ cách mạng kiên trung như Tô Hiệu, Lê Duẩn, Trường Chinh...",
+        audioVi: "https://www.soundhelix.com/examples/mp3/SoundHelix-Song-1.mp3", // Thay bằng link âm thanh thuyết minh tiếng Việt thực tế
+        arLink: "ar-viewer.html?model=nhasan" // Link kết nối sang trang quét WebAR
+      },
+      {
+        id: "deophadin",
+        name: "Di tích lịch sử Đèo Pha Đin",
+        category: "Di tích Lịch sử Quốc gia",
+        coords: [21.5728, 103.5042],
+        image: "https://upload.wikimedia.org/wikipedia/commons/thumb/6/67/Deo_Pha_Din.jpg/640px-Deo_Pha_Din.jpg",
+        description: "Ranh giới tự nhiên giữa Sơn La và Điện Biên. Nơi chứng kiến tuyến đường huyết mạch chi viện cho chiến dịch Điện Biên Phủ lịch sử năm 1954.",
+        audioVi: "https://www.soundhelix.com/examples/mp3/SoundHelix-Song-2.mp3",
+        arLink: "ar-viewer.html?model=pha_din"
+      },
+      {
+        id: "ngabaconoi",
+        name: "Ngã ba Cò Nòi (Mai Sơn)",
+        category: "Di tích Lịch sử Quốc gia",
+        coords: [21.1415, 104.0322],
+        image: "https://upload.wikimedia.org/wikipedia/commons/thumb/0/0c/Tuong_dai_liet_si_Co_Noi.jpg/640px-Tuong_dai_liet_si_Co_Noi.jpg",
+        description: "Yết hầu giao thông lửa trong kháng chiến chống Pháp, nơi ghi dấu sự hy sinh anh dũng của lực lượng Thanh niên xung phong đảm bảo thông đường ra mặt trận.",
+        audioVi: "https://www.soundhelix.com/examples/mp3/SoundHelix-Song-3.mp3",
+        arLink: "ar-viewer.html?model=conoi"
+      },
+      {
+        id: "thapmuongbam",
+        name: "Tháp Mường Bám (Thuận Châu)",
+        category: "Di tích Kiến trúc - Nghệ thuật",
+        coords: [21.2891, 103.4567],
+        image: "https://images.unsplash.com/photo-1548013146-72479768bada?w=500&auto=format&fit=crop&q=60",
+        description: "Quần thể tháp cổ mang đậm phong cách kiến trúc Phật giáo bản địa, phản ánh mối giao lưu văn hóa đặc sắc giữa người Thái và người Lào cổ.",
+        audioVi: "https://www.soundhelix.com/examples/mp3/SoundHelix-Song-4.mp3",
+        arLink: "ar-viewer.html?model=thap_muong_bam"
+      }
+    ];
+
+    // 4. Tạo Marker và Popup động cho từng địa điểm
+    historicalSites.forEach(site => {
+      // Nội dung HTML hiển thị bên trong Popup
+      const popupHtml = `
+        <div class="popup-card">
+          <img src="${site.image}" alt="${site.name}" onerror="this.src='https://via.placeholder.com/260x140?text=S%C6%A1n+La'">
+          <span class="popup-tag">${site.category}</span>
+          <h2 class="popup-title">${site.name}</h2>
+          <p class="popup-desc">${site.description}</p>
+          
+          <div class="audio-block">
+            <label>🎧 Thuyết minh âm thanh:</label>
+            <audio controls preload="none">
+              <source src="${site.audioVi}" type="audio/mpeg">
+              Trình duyệt không hỗ trợ phát âm thanh.
+            </audio>
+          </div>
+
+          <a href="${site.arLink}" class="ar-btn" target="_blank">
+            📷 Trải nghiệm vật phẩm 3D / AR
+          </a>
+        </div>
+      `;
+
+      // Ghim marker lên bản đồ
+      const marker = L.marker(site.coords).addTo(map);
+      marker.bindPopup(popupHtml);
+
+      // Khi người dùng đóng Popup, tự động dừng âm thanh đang phát
+      marker.on('popupclose', function() {
+        const audios = document.querySelectorAll('audio');
+        audios.forEach(a => {
+          a.pause();
+          a.currentTime = 0;
+        });
+      });
+    });
+  </script>
+</body>
+</html>
