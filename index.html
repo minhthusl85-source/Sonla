@@ -51,7 +51,7 @@
       attribution: '&copy; OpenStreetMap'
     }).addTo(map);
 
-    // MẢNG DỮ LIỆU ĐỊA DANH (ĐÚNG 10 ĐỊA DANH NHƯ YÊU CẦU)
+    // MẢNG DỮ LIỆU ĐỊA DANH 
     const historicalSites = [
       {
         id: "nhatusonla",
@@ -61,7 +61,7 @@
         image: "https://upload.wikimedia.org/wikipedia/commons/thumb/c/c5/Nha_tu_Son_La.jpg/640px-Nha_tu_Son_La.jpg",
         description: "Xây dựng năm 1908 trên đồi Khau Cả. Nơi tôi luyện ý chí kiên trung của các chiến sĩ cách mạng.",
         audioVi: "https://www.soundhelix.com/examples/mp3/SoundHelix-Song-1.mp3",
-        arLink: "ar-viewer.html"
+        arLink: "ar-nhatu.html"
       },
       {
         id: "baidacokheho",
@@ -71,7 +71,7 @@
         image: "https://images.unsplash.com/photo-1615599818818-7da5635f2991?w=500&auto=format&fit=crop&q=60", 
         description: "Khu bãi đá cổ lưu giữ nhiều hình khắc họa tinh xảo, độc đáo của cư dân cổ đại vùng Tây Bắc.",
         audioVi: "https://www.soundhelix.com/examples/mp3/SoundHelix-Song-1.mp3",
-        arLink: "ar-viewer.html"
+        arLink: "ar-kheho.html"
       },
       {
         id: "hangdoimocchau",
@@ -81,7 +81,7 @@
         image: "https://images.unsplash.com/photo-1518709268805-4e9042af9f23?w=500&auto=format&fit=crop&q=60",
         description: "Được mệnh danh là 'Tây thiên đệ nhất động' với hệ thống thạch nhũ tự nhiên kỳ ảo.",
         audioVi: "https://www.soundhelix.com/examples/mp3/SoundHelix-Song-3.mp3",
-        arLink: "ar-viewer.html"
+        arLink: "ar-hangdoi.html"
       },
       {
         id: "kydaithuanchau",
@@ -91,7 +91,7 @@
         image: "https://images.unsplash.com/photo-1596700685412-1d604dd873eb?w=500&auto=format&fit=crop&q=60", 
         description: "Nơi ghi dấu sự kiện ngày 7/5/1959, Chủ tịch Hồ Chí Minh về thăm đồng bào Tây Bắc.",
         audioVi: "https://www.soundhelix.com/examples/mp3/SoundHelix-Song-2.mp3",
-        arLink: "ar-viewer.html"
+        arLink: "ar-thuanchau.html"
       },
       {
         id: "dinhtaxua",
@@ -101,82 +101,8 @@
         image: "https://images.unsplash.com/photo-1507525428034-b723cf961d3e?w=500&auto=format&fit=crop&q=60",
         description: "Dãy núi nổi tiếng với biển mây quanh năm và địa hình 'Sống lưng khủng long' hùng vĩ.",
         audioVi: "https://www.soundhelix.com/examples/mp3/SoundHelix-Song-2.mp3",
-        arLink: "ar-viewer.html"
+        arLink: "ar-taxua.html"
       },
       {
         id: "vanbiaquelam",
-        name: "Văn bia Quế Lâm ngự chế",
-        category: "Di tích Lịch sử - Văn hóa",
-        coords: [21.3315, 103.9038], 
-        image: "https://images.unsplash.com/photo-1599387817088-34825d1e2e12?w=500&auto=format&fit=crop&q=60", 
-        description: "Nơi lưu giữ bài thơ do vua Lê Thái Tông thân chinh khắc trên vách đá năm 1440.",
-        audioVi: "https://www.soundhelix.com/examples/mp3/SoundHelix-Song-2.mp3",
-        arLink: "ar-viewer.html"
-      },
-      {
-        id: "thapmuongbam",
-        name: "Tháp Mường Bám (Thuận Châu)",
-        category: "Di tích Kiến trúc",
-        coords: [21.2891, 103.4567],
-        image: "https://images.unsplash.com/photo-1548013146-72479768bada?w=500&auto=format&fit=crop&q=60",
-        description: "Quần thể tháp cổ mang đậm phong cách kiến trúc bản địa giao thoa văn hóa.",
-        audioVi: "https://www.soundhelix.com/examples/mp3/SoundHelix-Song-2.mp3",
-        arLink: "ar-viewer.html"
-      },
-      {
-        id: "deophadin",
-        name: "Đèo Pha Đin (Thuận Châu)",
-        category: "Di tích Lịch sử Quốc gia",
-        coords: [21.5728, 103.5042],
-        image: "https://upload.wikimedia.org/wikipedia/commons/thumb/6/67/Deo_Pha_Din.jpg/640px-Deo_Pha_Din.jpg",
-        description: "Tuyến giao thông huyết mạch tiếp viện vũ khí, lương thực cho chiến dịch Điện Biên Phủ.",
-        audioVi: "https://www.soundhelix.com/examples/mp3/SoundHelix-Song-2.mp3",
-        arLink: "ar-viewer.html"
-      },
-      {
-        id: "ngabaconoi",
-        name: "Ngã ba Cò Nòi (Mai Sơn)",
-        category: "Di tích Lịch sử Quốc gia",
-        coords: [21.1415, 104.0322],
-        image: "https://upload.wikimedia.org/wikipedia/commons/thumb/0/0c/Tuong_dai_liet_si_Co_Noi.jpg/640px-Tuong_dai_liet_si_Co_Noi.jpg",
-        description: "Tọa độ lửa anh dũng ghi dấu sự hy sinh kiên cường của lực lượng Thanh niên xung phong.",
-        audioVi: "https://www.soundhelix.com/examples/mp3/SoundHelix-Song-3.mp3",
-        arLink: "ar-viewer.html"
-      },
-      {
-        id: "ditichvietlao",
-        name: "Khu di tích lịch sử Cách mạng Việt Nam - Lào",
-        category: "Di tích Quốc gia đặc biệt",
-        coords: [20.9322, 104.3125], 
-        image: "https://images.unsplash.com/photo-1596700685412-1d604dd873eb?w=500&auto=format&fit=crop&q=60", 
-        description: "Tọa lạc tại Lao Khô, biểu tượng thiêng liêng của tình đoàn kết hữu nghị đặc biệt Việt - Lào.",
-        audioVi: "https://www.soundhelix.com/examples/mp3/SoundHelix-Song-3.mp3",
-        arLink: "ar-viewer.html"
-      }
-    ];
-
-    historicalSites.forEach(site => {
-      const popupHtml = `
-        <div class="popup-card">
-          <img src="${site.image}" alt="${site.name}">
-          <span class="popup-tag">${site.category}</span>
-          <h2 class="popup-title">${site.name}</h2>
-          <p class="popup-desc">${site.description}</p>
-          <div class="audio-block">
-            <label>🎧 Thuyết minh âm thanh:</label>
-            <audio controls preload="none">
-              <source src="${site.audioVi}" type="audio/mpeg">
-            </audio>
-          </div>
-          <a href="${site.arLink}" class="ar-btn">📷 Trải nghiệm vật phẩm 3D / AR</a>
-        </div>
-      `;
-      const marker = L.marker(site.coords).addTo(map);
-      marker.bindPopup(popupHtml);
-      marker.on('popupclose', () => {
-        document.querySelectorAll('audio').forEach(a => { a.pause(); a.currentTime = 0; });
-      });
-    });
-  </script>
-</body>
-</html>
+        name: "Văn
