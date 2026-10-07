@@ -51,7 +51,7 @@
       attribution: '&copy; OpenStreetMap'
     }).addTo(map);
 
-    // MẢNG DỮ LIỆU ĐỊA DANH 
+    // MẢNG DỮ LIỆU ĐỊA DANH ĐÃ ĐƯỢC ĐÓNG NGOẶC HOÀN CHỈNH
     const historicalSites = [
       {
         id: "nhatusonla",
@@ -105,4 +105,34 @@
       },
       {
         id: "vanbiaquelam",
-        name: "Văn
+        name: "Văn bia Quế Lâm Ngự Chế",
+        category: "Di tích Lịch sử Văn hóa",
+        coords: [21.3333, 103.9000],
+        image: "https://images.unsplash.com/photo-1596700685412-1d604dd873eb?w=500&auto=format&fit=crop&q=60",
+        description: "Nơi lưu giữ bài thơ của vua Lê Thái Tông khắc trên vách đá năm 1440.",
+        audioVi: "https://www.soundhelix.com/examples/mp3/SoundHelix-Song-2.mp3",
+        arLink: "ar-ditich.html"
+      }
+    ];
+
+    // VÒNG LẶP ĐỂ HIỂN THỊ CÁC ĐIỂM TRÊN BẢN ĐỒ
+    historicalSites.forEach(site => {
+      const marker = L.marker(site.coords).addTo(map);
+      const popupContent = `
+        <div class="popup-card">
+          <img src="${site.image}" alt="${site.name}">
+          <span class="popup-tag">${site.category}</span>
+          <h3 class="popup-title">${site.name}</h3>
+          <p class="popup-desc">${site.description}</p>
+          <div class="audio-block">
+            <label>🎧 Thuyết minh:</label>
+            <audio controls src="${site.audioVi}"></audio>
+          </div>
+          <a href="${site.arLink}" class="ar-btn">👁️ Xem 3D / AR</a>
+        </div>
+      `;
+      marker.bindPopup(popupContent);
+    });
+  </script>
+</body>
+</html>
