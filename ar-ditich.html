@@ -19,8 +19,7 @@
   </div>
   <div id="guide-box">Hướng camera vào thẻ ảnh Nhà Tù Sơn La</div>
   
-  <!-- Đã sửa sạch các lỗi cú pháp gây treo máy -->
-  <a-scene mindar-image="imageTargetSrc: nhatu.mind; autoStart: true; uiScanning: yes;" vr-mode-ui="enabled: false" device-orientation-permission-ui="enabled: false">
+  <a-scene mindar-image="imageTargetSrc: nhatu.mind; autoStart: true; uiScanning: yes;" color-space="sRGB" renderer="colorManagement: true; physicallyCorrectLights: true" vr-mode-ui="enabled: false" device-orientation-permission-ui="enabled: false">
     
     <a-assets>
       <a-asset-item id="model-3d" src="https://cdn.jsdelivr.net/gh/KhronosGroup/glTF-Sample-Models/2.0/Duck/glTF-Binary/Duck.glb"></a-asset-item>
@@ -29,7 +28,6 @@
     <a-camera position="0 0 0" look-controls="enabled: false"></a-camera>
 
     <a-entity mindar-image-target="targetIndex: 0">
-      <!-- Cho phép vịt tự động xoay nhẹ nhàng -->
       <a-gltf-model src="#model-3d" position="0 0 0.1" scale="0.1 0.1 0.1" rotation="90 0 0" animation="property: rotation; to: 90 360 0; loop: true; dur: 8000; easing: linear"></a-gltf-model>
     </a-entity>
   </a-scene>
