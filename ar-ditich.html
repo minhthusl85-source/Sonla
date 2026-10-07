@@ -7,35 +7,20 @@
   <script src="https://aframe.io/releases/1.4.2/aframe.min.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/mind-ar@1.2.2/dist/mindar-image-aframe.prod.js"></script>
   <style>
-    body { margin: 0; overflow: hidden; font-family: sans-serif; }
-    #top-bar { position: absolute; top: 15px; left: 15px; right: 15px; z-index: 1000; display: flex; justify-content: space-between; align-items: center; pointer-events: none; }
-    .btn-back { pointer-events: auto; background: rgba(0,0,0,0.65); color: #fff; padding: 8px 14px; border-radius: 20px; text-decoration: none; font-size: 13px; }
-    #guide-box { position: absolute; bottom: 25px; left: 50%; transform: translateX(-50%); background: rgba(17,17,17,0.85); color: #fff; padding: 10px 20px; border-radius: 25px; font-size: 13px; text-align: center; z-index: 1000; }
+    body { margin: 0; overflow: hidden; font-family: sans-serif; background: #000; }
+    #top-bar { position: absolute; top: 15px; left: 15px; right: 15px; z-index: 1000; }
+    .btn-back { background: rgba(0,0,0,0.7); color: #fff; padding: 10px 18px; border-radius: 20px; text-decoration: none; font-size: 14px; font-weight: bold; }
+    #guide-box { position: absolute; bottom: 30px; left: 50%; transform: translateX(-50%); background: rgba(0,0,0,0.8); color: #fff; padding: 10px 20px; border-radius: 25px; font-size: 14px; text-align: center; z-index: 1000; width: 80%; }
   </style>
-  <script>
-    AFRAME.registerComponent('drag-rotate', {
-      init: function () {
-        let isDragging = false; let previousX = 0;
-        window.addEventListener('touchstart', (e) => { if (e.touches.length === 1) { isDragging = true; previousX = e.touches[0].clientX; } });
-        window.addEventListener('touchmove', (e) => {
-          if (!isDragging || e.touches.length !== 1) return;
-          const deltaX = e.touches[0].clientX - previousX; previousX = e.touches[0].clientX;
-          const currentRotation = this.el.getAttribute('rotation');
-          this.el.setAttribute('rotation', { x: currentRotation.x, y: currentRotation.y + deltaX * 0.5, z: currentRotation.z });
-        });
-        window.addEventListener('touchend', () => { isDragging = false; });
-      }
-    });
-  </script>
 </head>
 <body>
   <div id="top-bar">
     <a href="index.html" class="btn-back">⬅ Quay lại bản đồ</a>
   </div>
-  <div id="guide-box">Hướng camera vào thẻ ảnh di tích trên bàn</div>
+  <div id="guide-box">Hướng camera vào thẻ ảnh Nhà Tù Sơn La</div>
   
-  <!-- Tên file ĐÃ ĐƯỢC SỬA THÀNH nhatu.mind (Viết liền không dấu) -->
-  <a-scene mindar-image="imageTargetSrc: nhatu.mind; autoStart: true; uiScanning: yes;" color-space="sRGB" renderer="colorManagement: true, physicallyCorrectLights" vr-mode-ui="enabled: false" device-orientation-permission-ui="enabled: false">
+  <!-- Đã sửa sạch các lỗi cú pháp gây treo máy -->
+  <a-scene mindar-image="imageTargetSrc: nhatu.mind; autoStart: true; uiScanning: yes;" vr-mode-ui="enabled: false" device-orientation-permission-ui="enabled: false">
     
     <a-assets>
       <a-asset-item id="model-3d" src="https://cdn.jsdelivr.net/gh/KhronosGroup/glTF-Sample-Models/2.0/Duck/glTF-Binary/Duck.glb"></a-asset-item>
@@ -44,7 +29,8 @@
     <a-camera position="0 0 0" look-controls="enabled: false"></a-camera>
 
     <a-entity mindar-image-target="targetIndex: 0">
-      <a-gltf-model src="#model-3d" position="0 0 0.1" scale="0.1 0.1 0.1" rotation="90 0 0" drag-rotate animation="property: rotation; to: 90 360 0; loop: true; dur: 10000; easing: linear"></a-gltf-model>
+      <!-- Cho phép vịt tự động xoay nhẹ nhàng -->
+      <a-gltf-model src="#model-3d" position="0 0 0.1" scale="0.1 0.1 0.1" rotation="90 0 0" animation="property: rotation; to: 90 360 0; loop: true; dur: 8000; easing: linear"></a-gltf-model>
     </a-entity>
   </a-scene>
 </body>
