@@ -34,17 +34,15 @@
   </div>
   <div id="guide-box">Hướng camera vào thẻ ảnh di tích trên bàn</div>
   
-  <!-- Chú ý dòng này: Đã sửa thành Nhà Tù.mind -->
-  <a-scene mindar-image="imageTargetSrc: Nhà Tù.mind; autoStart: true; uiScanning: yes;" color-space="sRGB" renderer="colorManagement: true, physicallyCorrectLights" vr-mode-ui="enabled: false" device-orientation-permission-ui="enabled: false">
+  <!-- Tên file ĐÃ ĐƯỢC SỬA THÀNH nhatu.mind (Viết liền không dấu) -->
+  <a-scene mindar-image="imageTargetSrc: nhatu.mind; autoStart: true; uiScanning: yes;" color-space="sRGB" renderer="colorManagement: true, physicallyCorrectLights" vr-mode-ui="enabled: false" device-orientation-permission-ui="enabled: false">
     
     <a-assets>
-      <!-- Vẫn giữ nguyên link mô hình Chú Vịt -->
       <a-asset-item id="model-3d" src="https://cdn.jsdelivr.net/gh/KhronosGroup/glTF-Sample-Models/2.0/Duck/glTF-Binary/Duck.glb"></a-asset-item>
     </a-assets>
 
     <a-camera position="0 0 0" look-controls="enabled: false"></a-camera>
 
-    <!-- Liên kết hình ảnh và mô hình Chú Vịt -->
     <a-entity mindar-image-target="targetIndex: 0">
       <a-gltf-model src="#model-3d" position="0 0 0.1" scale="0.1 0.1 0.1" rotation="90 0 0" drag-rotate animation="property: rotation; to: 90 360 0; loop: true; dur: 10000; easing: linear"></a-gltf-model>
     </a-entity>
