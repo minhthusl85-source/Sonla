@@ -5,142 +5,85 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Bản đồ số Di tích & Di sản Sơn La</title>
   
-  <!-- Thư viện bản đồ Leaflet CSS -->
-  <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY=" crossorigin=""/>
+  <!-- Leaflet CSS -->
+  <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" crossorigin=""/>
   
   <style>
     body { margin: 0; padding: 0; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; }
     
-    #header {
-      background: #1b5e20; color: #fff; padding: 12px 20px;
-      text-align: center; font-size: 18px; font-weight: bold;
-      box-shadow: 0 2px 5px rgba(0,0,0,0.2); position: relative; z-index: 1000;
+    /* Thanh tiêu đề giống ảnh mẫu */
+    .top-header {
+      background: #1b5e20; color: #fff; padding: 10px 15px; font-weight: bold; font-size: 14px;
     }
+    .top-sub { font-size: 11px; font-weight: normal; opacity: 0.9; }
     
-    #map { width: 100%; height: calc(100vh - 52px); }
+    #map { width: 100%; height: calc(100vh - 50px); }
     
-    .leaflet-popup-content-wrapper { border-radius: 12px; padding: 5px; }
+    /* Tùy chỉnh nút bấm giống ảnh mẫu */
+    .btn-ar-custom {
+      display: block; width: 100%; background: #d35400; color: #fff; text-align: center;
+      padding: 8px 0; border-radius: 6px; text-decoration: none; font-weight: bold; margin-top: 8px; font-size: 13px;
+    }
+    .btn-audio-custom {
+      display: block; width: 100%; background: #c0392b; color: #fff; text-align: center;
+      padding: 6px 0; border-radius: 6px; text-decoration: none; font-weight: bold; margin-top: 6px; font-size: 12px;
+    }
   </style>
 </head>
 <body>
 
-  <div id="header">
-    🗺️ Bản đồ số Di tích & Di sản Sơn La <span style="font-size: 12px; font-weight: normal; display: block;">Sản phẩm STEM - Giáo dục địa phương & Tin học</span>
+  <div class="top-header">
+    Di sản & Di tích Lịch sử Sơn La
+    <div class="top-sub">Sản phẩm STEM - Giáo dục địa phương & Tin học THPT</div>
   </div>
 
   <div id="map"></div>
 
-  <!-- Thư viện bản đồ Leaflet JS -->
-  <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js" integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo=" crossorigin=""></script>
+  <!-- Leaflet JS -->
+  <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js" crossorigin=""></script>
 
   <script>
-    // 1. Khởi tạo bản đồ tập trung toàn tỉnh Sơn La
+    // 1. Khởi tạo bản đồ
     var map = L.map('map').setView([21.3283, 103.9149], 9);
 
-    // 2. Thêm lớp nền bản đồ OpenStreetMap
     L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
       maxZoom: 19,
       attribution: '&copy; Bản đồ số Sơn La'
     }).addTo(map);
 
-    // 3. Dữ liệu chính xác 10 địa danh (Đã thay Tháp Mường Và thành Mường Bám)
+    // 2. 10 địa danh chính xác theo yêu cầu của cô
     const locations = [
-      {
-        name: "Bãi đá cổ Khe Hổ",
-        lat: 21.9000, lng: 104.2500,
-        desc: "Di tích khảo cổ học bãi đá khắc cổ độc đáo tại xã Hang Chú, huyện Bắc Yên.",
-        videoUrl: "https://www.youtube.com/watch?v=SZXUQVDgtOw",
-        arPage: "ar-ditich.html"
-      },
-      {
-        name: "Kỳ đài Thuận Châu",
-        lat: 21.4800, lng: 103.6800,
-        desc: "Di tích lịch sử ghi dấu ấn tại huyện Thuận Châu, tỉnh Sơn La.",
-        videoUrl: "https://www.youtube.com/watch?v=SZXUQVDgtOw",
-        arPage: "ar-ditich.html"
-      },
-      {
-        name: "Hang Dơi",
-        lat: 21.3200, lng: 104.6500,
-        desc: "Danh thắng quốc gia động Sơn Mộc Hương với hệ thống nhũ đá kỳ ảo tại Mộc Châu.",
-        videoUrl: "https://www.youtube.com/watch?v=SZXUQVDgtOw",
-        arPage: "ar-ditich.html"
-      },
-      {
-        name: "Đỉnh Tà Xùa",
-        lat: 21.4300, lng: 104.3800,
-        desc: "Thiên đường săn mây nổi tiếng bậc nhất miền Bắc tại huyện Bắc Yên.",
-        videoUrl: "https://www.youtube.com/watch?v=SZXUQVDgtOw",
-        arPage: "ar-ditich.html"
-      },
-      {
-        name: "Văn Bia Quế Lâm Ngự Chế",
-        lat: 21.3270, lng: 103.9080,
-        desc: "Di tích lịch sử - văn hóa ghi lại bài thơ của vua Lê Thái Tông trên vách đá thành phố Sơn La.",
-        videoUrl: "https://www.youtube.com/watch?v=SZXUQVDgtOw",
-        arPage: "ar-ditich.html"
-      },
-      {
-        name: "Nhà Tù Sơn La",
-        lat: 21.3250, lng: 103.9050,
-        desc: "Di tích quốc gia đặc biệt trên đồi Khau Cả. Nơi tôi luyện ý chí kiên trung của các chiến sĩ cách mạng.",
-        videoUrl: "https://www.youtube.com/watch?v=SZXUQVDgtOw",
-        arPage: "ar-ditich.html"
-      },
-      {
-        name: "Mường Bám",
-        lat: 21.6500, lng: 103.4000,
-        desc: "Vùng đất và di tích lịch sử tại xã Mường Bám, huyện Thuận Châu, tỉnh Sơn La.",
-        videoUrl: "https://www.youtube.com/watch?v=SZXUQVDgtOw",
-        arPage: "ar-ditich.html"
-      },
-      {
-        name: "Đèo Pha Đin",
-        lat: 21.5700, lng: 103.5500,
-        desc: "Một trong 'tứ đại đỉnh đèo' hùng vĩ gắn liền với lịch sử kháng chiến.",
-        videoUrl: "https://www.youtube.com/watch?v=SZXUQVDgtOw",
-        arPage: "ar-ditich.html"
-      },
-      {
-        name: "Ngã Ba Cò Nòi",
-        lat: 21.1500, lng: 104.2800,
-        desc: "Tọa độ lửa quyết định huyết mạch giao thông trong chiến dịch Điện Biên Phủ tại Mai Sơn.",
-        videoUrl: "https://www.youtube.com/watch?v=SZXUQVDgtOw",
-        arPage: "ar-ditich.html"
-      },
-      {
-        name: "Di tích Việt Nam Lào",
-        lat: 21.1000, lng: 103.8000,
-        desc: "Khu di tích lịch sử ghi dấu tình hữu nghị đặc biệt Việt Nam - Lào.",
-        videoUrl: "https://www.youtube.com/watch?v=SZXUQVDgtOw",
-        arPage: "ar-ditich.html"
-      }
+      { name: "Bãi đá cổ Khe Hổ", lat: 21.9000, lng: 104.2500, tag: "DI TÍCH KHẢO CỔ", desc: "Di tích khảo cổ học bãi đá khắc cổ độc đáo tại xã Hang Chú, huyện Bắc Yên.", videoUrl: "https://www.youtube.com/watch?v=SZXUQVDgtOw" },
+      { name: "Kỳ đài Thuận Châu", lat: 21.4800, lng: 103.6800, tag: "DI TÍCH LỊCH SỬ", desc: "Di tích lịch sử ghi dấu ấn tại huyện Thuận Châu, tỉnh Sơn La.", videoUrl: "https://www.youtube.com/watch?v=SZXUQVDgtOw" },
+      { name: "Hang Dơi", lat: 21.3200, lng: 104.6500, tag: "DANH THẮNG QUỐC GIA", desc: "Danh thắng quốc gia động Sơn Mộc Hương với hệ thống nhũ đá kỳ ảo tại Mộc Châu.", videoUrl: "https://www.youtube.com/watch?v=SZXUQVDgtOw" },
+      { name: "Đỉnh Tà Xùa", lat: 21.4300, lng: 104.3800, tag: "DU LỊCH TRẢI NGHIỆM", desc: "Thiên đường săn mây nổi tiếng bậc nhất miền Bắc tại huyện Bắc Yên.", videoUrl: "https://www.youtube.com/watch?v=SZXUQVDgtOw" },
+      { name: "Văn Bia Quế Lâm Ngự Chế", lat: 21.3270, lng: 103.9080, tag: "DI TÍCH VĂN HÓA", desc: "Di tích lịch sử - văn hóa ghi lại bài thơ của vua Lê Thái Tông trên vách đá thành phố Sơn La.", videoUrl: "https://www.youtube.com/watch?v=SZXUQVDgtOw" },
+      { name: "Nhà Tù Sơn La", lat: 21.3250, lng: 103.9050, tag: "DI TÍCH LỊCH SỬ CÁCH MẠNG", desc: "Xây dựng năm 1908 trên đồi Khau Cả. Nơi tôi luyện ý chí kiên trung của các chiến sĩ cách mạng.", videoUrl: "https://www.youtube.com/watch?v=SZXUQVDgtOw" },
+      { name: "Mường Bám", lat: 21.6500, lng: 103.4000, tag: "DI TÍCH ĐỊA PHƯƠNG", desc: "Vùng đất và di tích lịch sử tại xã Mường Bám, huyện Thuận Châu, tỉnh Sơn La.", videoUrl: "https://www.youtube.com/watch?v=SZXUQVDgtOw" },
+      { name: "Đèo Pha Đin", lat: 21.5700, lng: 103.5500, tag: "DANH THẮNG LỊCH SỬ", desc: "Một trong 'tứ đại đỉnh đèo' hùng vĩ gắn liền với lịch sử kháng chiến.", videoUrl: "https://www.youtube.com/watch?v=SZXUQVDgtOw" },
+      { name: "Ngã Ba Cò Nòi", lat: 21.1500, lng: 104.2800, tag: "DI TÍCH QUỐC GIA", desc: "Tọa độ lửa quyết định huyết mạch giao thông trong chiến dịch Điện Biên Phủ tại Mai Sơn.", videoUrl: "https://www.youtube.com/watch?v=SZXUQVDgtOw" },
+      { name: "Di tích Việt Nam Lào", lat: 21.1000, lng: 103.8000, tag: "DI TÍCH HỮU NGHỊ", desc: "Khu di tích lịch sử ghi dấu tình hữu nghị đặc biệt Việt Nam - Lào.", videoUrl: "https://www.youtube.com/watch?v=SZXUQVDgtOw" }
     ];
 
-    // 4. Vòng lặp hiển thị toàn bộ 10 điểm lên bản đồ
+    // 3. Đưa các điểm lên bản đồ với popup chuẩn giao diện mẫu
     locations.forEach(loc => {
       var marker = L.marker([loc.lat, loc.lng]).addTo(map);
 
-      var popupContent = `
-        <div style="font-family: 'Segoe UI', sans-serif; width: 220px;">
-          <h3 style="color: #1b5e20; margin: 0 0 6px 0; font-size: 15px; text-transform: uppercase;">${loc.name}</h3>
-          <p style="font-size: 13px; color: #333; margin: 0 0 10px 0; line-height: 1.4;">
-            ${loc.desc}
-          </p>
+      var popupHTML = `
+        <div style="font-family: sans-serif; width: 220px;">
+          <div style="font-size: 10px; color: #27ae60; font-weight: bold; margin-bottom: 3px;">📍 ${loc.tag}</div>
+          <h3 style="margin: 0 0 5px 0; font-size: 15px; color: #222;">${loc.name}</h3>
+          <p style="font-size: 12px; color: #555; margin: 0 0 8px 0; line-height: 1.4;">${loc.desc}</p>
           
-          <!-- Nút Thuyết minh mở video YouTube trực tiếp -->
-          <a href="${loc.videoUrl}" target="_blank" style="display: block; background: #d32f2f; color: #fff; padding: 7px 10px; text-align: center; border-radius: 6px; text-decoration: none; margin-bottom: 6px; font-size: 13px; font-weight: bold;">
-            ▶ Thuyết minh (Xem Video)
-          </a>
+          <!-- Nút thuyết minh xem video YouTube -->
+          <a href="${loc.videoUrl}" target="_blank" class="btn-audio-custom">▶ Xem Video Thuyết minh</a>
           
-          <!-- Nút chuyển sang trang quét QR trắc nghiệm -->
-          <a href="${loc.arPage}" style="display: block; background: #1b5e20; color: #fff; padding: 7px 10px; text-align: center; border-radius: 6px; text-decoration: none; font-size: 13px; font-weight: bold;">
-            📷 Quét QR & Trắc nghiệm
-          </a>
+          <!-- Nút 3D / AR chuyển sang quét QR trắc nghiệm -->
+          <a href="ar-ditich.html" class="btn-ar-custom">Xem 3D / AR & Trắc nghiệm</a>
         </div>
       `;
 
-      marker.bindPopup(popupContent);
+      marker.bindPopup(popupHTML);
     });
   </script>
 
