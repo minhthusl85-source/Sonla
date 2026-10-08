@@ -3,9 +3,9 @@
 <head>
   <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
   <meta charset="UTF-8">
-  <title>Trắc nghiệm QR - Nhà tù Sơn La</title>
+  <title>Khám phá & Trắc nghiệm - Nhà tù Sơn La</title>
   
-  <!-- Thư viện đọc mã QR (Html5-Qrcode) -->
+  <!-- Thư viện quét mã QR -->
   <script src="https://unpkg.com/html5-qrcode" type="text/javascript"></script>
   
   <style>
@@ -13,29 +13,37 @@
     
     .container {
       background: #fff; padding: 20px; border-radius: 16px;
-      box-shadow: 0 10px 30px rgba(0,0,0,0.1); width: 90%; max-width: 400px;
+      box-shadow: 0 10px 30px rgba(0,0,0,0.15); width: 92%; max-width: 420px;
       text-align: center; border-top: 6px solid #1b5e20;
+      max-height: 90vh; overflow-y: auto; box-sizing: border-box;
     }
     
-    .card-title { color: #1b5e20; font-size: 17px; font-weight: 900; margin-bottom: 15px; text-transform: uppercase; }
+    .card-title { color: #1b5e20; font-size: 17px; font-weight: 900; margin-bottom: 12px; text-transform: uppercase; }
     
-    /* Khu vực máy quét QR */
-    #reader { width: 100%; border-radius: 10px; overflow: hidden; margin-bottom: 15px; }
+    #reader { width: 100%; border-radius: 10px; overflow: hidden; margin-bottom: 12px; }
     
     .input-box {
       width: 100%; padding: 10px; margin: 6px 0; border: 1px solid #ccc; border-radius: 6px; font-size: 14px; box-sizing: border-box;
     }
     .btn-main {
-      width: 100%; background: #1b5e20; color: #fff; border: none; padding: 12px; border-radius: 6px; font-size: 15px; font-weight: bold; cursor: pointer; margin-top: 10px;
+      width: 100%; background: #1b5e20; color: #fff; border: none; padding: 11px; border-radius: 6px; font-size: 15px; font-weight: bold; cursor: pointer; margin-top: 8px;
     }
     .btn-main:hover { background: #144517; }
 
-    /* Phần trắc nghiệm ban đầu ẩn đi */
-    #step-quiz, #step-info { display: none; }
-    .quiz-progress { font-size: 12px; color: #d32f2f; font-weight: bold; margin-bottom: 6px; text-transform: uppercase; }
-    .quiz-question { font-size: 14px; color: #222; margin-bottom: 12px; font-weight: bold; text-align: left; line-height: 1.4; }
+    /* Các bước ẩn/hiện */
+    #step-info, #step-video, #step-quiz { display: none; }
+    
+    .video-container {
+      position: relative; width: 100%; padding-bottom: 56.25%; height: 0; margin-bottom: 12px; border-radius: 8px; overflow: hidden; background: #000;
+    }
+    .video-container iframe {
+      position: absolute; top: 0; left: 0; width: 100%; height: 100%; border: 0;
+    }
+
+    .quiz-progress { font-size: 12px; color: #d32f2f; font-weight: bold; margin-bottom: 4px; text-transform: uppercase; }
+    .quiz-question { font-size: 14px; color: #222; margin-bottom: 10px; font-weight: bold; text-align: left; line-height: 1.4; }
     .btn-answer {
-      display: block; width: 100%; margin: 6px 0; padding: 10px 12px;
+      display: block; width: 100%; margin: 5px 0; padding: 9px 12px;
       border: 2px solid #1976d2; border-radius: 6px;
       background: #fff; color: #1976d2; font-size: 13px; font-weight: 600;
       cursor: pointer; text-align: left;
@@ -54,21 +62,31 @@
   <div class="container">
     <div class="card-title">🏛️ Trạm: Nhà Tù Sơn La</div>
 
-    <!-- BƯỚC 1: MÁY QUÉT QR -->
+    <!-- BƯỚC 1: QUÉT MÃ QR -->
     <div id="step-qr">
-      <p style="font-size: 13px; color: #555; margin-bottom: 10px;">Vui lòng quét mã QR của trạm để mở bài làm:</p>
+      <p style="font-size: 13px; color: #555; margin-bottom: 10px;">Quét mã QR của trạm để bắt đầu trải nghiệm:</p>
       <div id="reader"></div>
     </div>
 
     <!-- BƯỚC 2: NHẬP HỌ TÊN VÀ LỚP -->
     <div id="step-info">
-      <p style="font-size: 13px; color: #555; margin-bottom: 10px;">Quét QR thành công! Em điền thông tin:</p>
+      <p style="font-size: 13px; color: #555; margin-bottom: 8px;">Quét QR thành công! Em điền thông tin:</p>
       <input type="text" id="hs-name" class="input-box" placeholder="Họ và tên học sinh..." required>
       <input type="text" id="hs-class" class="input-box" placeholder="Lớp (Ví dụ: 10A1)..." required>
-      <button class="btn-main" onclick="startQuiz()">Bắt đầu làm bài ➔</button>
+      <button class="btn-main" onclick="goToVideo()">Tiếp tục xem tư liệu ➔</button>
     </div>
 
-    <!-- BƯỚC 3: HỆ THỐNG TRẮC NGHIỆM -->
+    <!-- BƯỚC 3: XEM VIDEO TƯ LIỆU -->
+    <div id="step-video">
+      <p style="font-size: 13px; color: #333; margin-bottom: 8px; font-weight: bold;">Tư liệu: Nhà tù Sơn La – Chứng tích lịch sử</p>
+      <div class="video-container">
+        <!-- Nhúng video YouTube chính thức -->
+        <iframe src="https://www.youtube.com/embed/SZXUQVDgtOw" allowfullscreen></iframe>
+      </div>
+      <button class="btn-main" onclick="startQuiz()">Làm bài trắc nghiệm ngay ➔</button>
+    </div>
+
+    <!-- BƯỚC 4: HỆ THỐNG TRẮC NGHIỆM -->
     <div id="step-quiz">
       <div class="quiz-progress" id="q-progress">Câu 1 / 10</div>
       <div class="quiz-question" id="q-text">Đang tải câu hỏi...</div>
@@ -77,7 +95,7 @@
   </div>
 
   <script>
-    // 10 câu hỏi trắc nghiệm của cô Thư
+    // 10 câu hỏi trắc nghiệm
     const questions = [
       { q: "Câu 1. Nhà tù Sơn La được thực dân Pháp xây dựng vào năm nào?", options: ["A. 1898", "B. 1905", "C. 1908", "D. 1910"], correct: 2 },
       { q: "Câu 2. Nhà tù Sơn La được xây dựng trên địa điểm nào?", options: ["A. Đồi Khau Cả", "B. Đồi A1", "C. Đồi Cò Nòi", "D. Đồi Nà Sản"], correct: 0 },
@@ -96,43 +114,38 @@
     let currentQIndex = 0;
     let totalScore = 0;
 
-    // Khởi động Camera quét mã QR ngay khi mở trang
+    // Khởi động Camera quét QR
     function onScanSuccess(decodedText, decodedResult) {
-      // Khi quét trúng mã QR hợp lệ (có thể là link hoặc mã bất kỳ của trạm)
       html5QrCode.stop().then((ignore) => {
         document.getElementById("step-qr").style.display = "none";
         document.getElementById("step-info").style.display = "block";
-      }).catch((err) => {
-        console.error("Lỗi dừng camera quét QR", err);
-      });
+      }).catch((err) => {});
     }
 
     let html5QrCode = new Html5Qrcode("reader");
-    html5QrCode.start(
-      { facingMode: "environment" }, 
-      { fps: 10, qrbox: { width: 220, height: 220 } },
-      onScanSuccess
-    ).catch(err => {
-      // Nếu không mở được camera, hiển thị thông báo để học sinh bấm chuyển bước thủ công hoặc kiểm tra quyền
-      document.getElementById("step-qr").innerHTML = '<p style="color:red; font-size:13px;">Không mở được camera. <br><button class="btn-main" onclick="skipQR()">Bấm vào đây để làm bài trực tiếp</button></p>';
-    });
+    html5QrCode.start({ facingMode: "environment" }, { fps: 10, qrbox: { width: 220, height: 220 } }, onScanSuccess)
+      .catch(err => { 
+        document.getElementById("step-qr").innerHTML = '<p style="color:red; font-size:13px;">Không mở được camera trực tiếp.</p><button class="btn-main" onclick="skipQR()">Bấm vào đây để vào làm bài</button>'; 
+      });
 
-    // Nút dự phòng nếu máy học sinh lỗi camera
     function skipQR() {
       document.getElementById("step-qr").style.display = "none";
       document.getElementById("step-info").style.display = "block";
     }
 
-    function startQuiz() {
+    function goToVideo() {
       studentName = document.getElementById("hs-name").value.trim();
       studentClass = document.getElementById("hs-class").value.trim();
-
       if(studentName === "" || studentClass === "") {
         alert("Em vui lòng điền đầy đủ Họ tên và Lớp nhé!");
         return;
       }
-
       document.getElementById("step-info").style.display = "none";
+      document.getElementById("step-video").style.display = "block";
+    }
+
+    function startQuiz() {
+      document.getElementById("step-video").style.display = "none";
       document.getElementById("step-quiz").style.display = "block";
       loadQuestion();
     }
@@ -141,7 +154,6 @@
       let q = questions[currentQIndex];
       document.getElementById("q-progress").innerText = `Câu ${currentQIndex + 1} / ${questions.length}`;
       document.getElementById("q-text").innerText = q.q;
-
       let optionsHTML = "";
       q.options.forEach((opt, idx) => {
         optionsHTML += `<button class="btn-answer" onclick="checkAnswer(${idx})">${opt}</button>`;
@@ -151,17 +163,14 @@
 
     function checkAnswer(selectedIdx) {
       let q = questions[currentQIndex];
-      if(selectedIdx === q.correct) {
-        totalScore += 10; // Mỗi câu đúng 10 điểm (Tổng 100 điểm)
-      }
-
+      if(selectedIdx === q.correct) { totalScore += 10; }
       currentQIndex++;
       if(currentQIndex < questions.length) {
         loadQuestion();
       } else {
         alert(`🎉 Hoàn thành bài làm!\nHọc sinh: ${studentName} - Lớp ${studentClass}\nTổng điểm: ${totalScore} / 100\n\nHệ thống sẽ chuyển sang Google Form để hoàn tất.`);
         
-        // Link Google Form của cô
+        // Chuyển hướng sang Google Form của cô
         const formURL = "https://forms.gle/MG5Hztpqj7Z3YXx59";
         window.location.href = formURL;
       }
