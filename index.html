@@ -17,7 +17,6 @@
       background-color: #f0f2f5;
     }
     
-    /* Căn lề hai bên, khoảng cách đoạn 6pt, không khoảng trống tự do */
     p { 
       text-align: justify !important; 
       margin: 0 0 6pt 0 !important; 
@@ -25,7 +24,6 @@
       line-height: normal;
     }
     
-    /* Các tiêu đề in đậm, khoảng cách 6pt */
     h1, h2, h3, h4, .marker-title, b { 
       font-weight: bold !important; 
       margin: 0 0 6pt 0 !important; 
@@ -60,7 +58,7 @@
     }
 
     .sidebar {
-      flex: 1; /* Cột trái và phải chiếm 1 phần */
+      flex: 1; 
       background: #ffffff;
       border: 2px solid #1b5e20;
       border-radius: 8px;
@@ -78,7 +76,7 @@
     }
 
     .main-map-area {
-      flex: 2.5; /* Cột giữa chứa bản đồ to nhất (2.5 phần) */
+      flex: 2.5; 
       background: #ffffff;
       border: 2px solid #1b5e20;
       border-radius: 8px;
@@ -92,7 +90,6 @@
       border-radius: 6px;
     }
     
-    /* Responsive cho màn hình nhỏ */
     @media (max-width: 1024px) {
       .content-wrapper { flex-direction: column; }
       #map { height: 50vh; }
@@ -116,11 +113,11 @@
       padding: 4px;
       text-align: center;
       box-shadow: 0 4px 10px rgba(0,0,0,0.3);
-      width: 125px;
+      width: 115px; /* Thu nhỏ khung một chút để bớt lấp nhau */
     }
     .badge-img {
       width: 100%;
-      height: 60px;
+      height: 55px;
       object-fit: cover;
       border-radius: 4px;
       display: block;
@@ -132,7 +129,7 @@
       white-space: nowrap;
       overflow: hidden;
       text-overflow: ellipsis;
-      font-size: 13pt !important;
+      font-size: 12pt !important;
     }
     .pin-pointer {
       width: 0; height: 0; 
@@ -192,7 +189,8 @@
 
   <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
   <script>
-    var map = L.map('map').setView([21.3283, 103.9149], 9);
+    // Đã chỉnh độ Zoom từ 9 lên 10 để các điểm giãn ra
+    var map = L.map('map').setView([21.3283, 103.9149], 10);
 
     L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
       maxZoom: 19,
@@ -237,8 +235,8 @@
             </div>
             <div class="pin-pointer"></div>
           </div>`,
-        iconSize: [135, 110],
-        iconAnchor: [67, 95]
+        iconSize: [125, 100],
+        iconAnchor: [62, 90]
       });
 
       var marker = L.marker([loc.lat, loc.lng], { icon: customIcon }).addTo(map);
