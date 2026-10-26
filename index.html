@@ -5,124 +5,87 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Bản đồ số Di tích & Di sản Sơn La</title>
   
-  <!-- Leaflet CSS -->
-  <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" crossorigin=""/>
+  <!-- Thư viện Leaflet CSS -->
+  <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
   
   <style>
-    body { margin: 0; padding: 0; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; }
+    body { margin: 0; padding: 0; font-family: Arial, sans-serif; }
+    .top-header { background: #1b5e20; color: #fff; padding: 10px 15px; font-weight: bold; font-size: 14px; }
+    #map { width: 100%; height: 92vh; }
     
-    .top-header {
-      background: #1b5e20; color: #fff; padding: 10px 15px; font-weight: bold; font-size: 14px;
-    }
-    .top-sub { font-size: 11px; font-weight: normal; opacity: 0.9; }
-    
-    #map { width: 100%; height: calc(100vh - 50px); }
-    
-    /* Tùy chỉnh hiển thị tên ngay dưới ghim trên bản đồ */
-    .map-label {
-      background: rgba(255, 255, 255, 0.95);
-      border: 1px solid #1b5e20;
-      padding: 2px 6px;
-      border-radius: 4px;
-      font-weight: bold;
-      font-size: 11px;
-      color: #1b5e20;
+    /* Tùy chỉnh phong cách tên hiện ngay dưới ghim cho thật nổi bật */
+    .custom-label {
+      background: #ffffff !important;
+      border: 2px solid #1b5e20 !important;
+      color: #1b5e20 !important;
+      font-weight: bold !important;
+      font-size: 12px !important;
+      padding: 3px 8px !important;
+      border-radius: 6px !important;
+      box-shadow: 0 2px 6px rgba(0,0,0,0.3) !important;
       white-space: nowrap;
-      box-shadow: 0 1px 3px rgba(0,0,0,0.3);
     }
 
-    /* Tùy chỉnh các nút bấm và hình ảnh trong popup */
-    .popup-img {
-      width: 100%; height: 120px; object-fit: cover; border-radius: 6px; margin-bottom: 6px;
-    }
-    .btn-custom {
-      display: block; width: 100%; text-align: center;
-      padding: 6px 0; border-radius: 6px; text-decoration: none; 
-      font-weight: bold; margin-top: 5px; font-size: 12px;
-    }
-    .btn-audio { background: #c0392b; color: #fff; }
-    .btn-ar { background: #d35400; color: #fff; }
-    .btn-route { background: #2980b9; color: #fff; }
+    .popup-img { width: 100%; height: 110px; object-fit: cover; border-radius: 4px; margin-bottom: 5px; }
+    .btn { display: block; width: 100%; text-align: center; padding: 6px 0; border-radius: 4px; text-decoration: none; font-weight: bold; margin-top: 5px; font-size: 12px; color: #fff; }
   </style>
 </head>
 <body>
 
-  <div class="top-header">
-    Di sản & Di tích Lịch sử Sơn La
-    <div class="top-sub">Sản phẩm STEM - Giáo dục địa phương & Tin học THPT</div>
-  </div>
-
+  <div class="top-header">Di sản & Di tích Lịch sử Sơn La (STEM)</div>
   <div id="map"></div>
 
-  <!-- Leaflet JS -->
-  <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js" crossorigin=""></script>
+  <!-- Thư viện Leaflet JS -->
+  <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
 
   <script>
-    // 1. Khởi tạo bản đồ tập trung vào tỉnh Sơn La
+    // Khởi tạo bản đồ
     var map = L.map('map').setView([21.3283, 103.9149], 9);
 
     L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
       maxZoom: 19,
-      attribution: '&copy; Bản đồ số Sơn La'
+      attribution: 'Bản đồ số Sơn La'
     }).addTo(map);
 
-    // 2. Định vị vị trí hiện tại của người dùng trên bản đồ (GPS)
-    if (navigator.geolocation) {
-      navigator.geolocation.getCurrentPosition(function(position) {
-        var userLat = position.coords.latitude;
-        var userLng = position.coords.longitude;
-
-        var userMarker = L.marker([userLat, userLng], {
-          icon: L.divIcon({
-            className: 'user-location-icon',
-            html: '<div style="background-color: #2980b9; width: 14px; height: 14px; border: 2px solid white; border-radius: 50%; box-shadow: 0 0 5px rgba(0,0,0,0.5);"></div>'
-          })
-        }).addTo(map);
-
-        userMarker.bindPopup("<b>📍 Vị trí hiện tại của bạn</b>");
-      });
-    }
-
-    // 3. Danh sách chính xác 10 địa danh kèm hình ảnh và tọa độ chuẩn
+    // 10 địa danh chuẩn xác
     const locations = [
-      { name: "Bãi đá cổ Khe Hổ", lat: 21.9000, lng: 104.2500, tag: "DI TÍCH KHẢO CỔ", desc: "Di tích khảo cổ học bãi đá khắc cổ độc đáo tại xã Hang Chú, huyện Bắc Yên.", videoUrl: "https://www.youtube.com/watch?v=SZXUQVDgtOw", imageUrl: "https://images.unsplash.com/photo-1506744038136-46273834b3fb" },
-      { name: "Kỳ đài Thuận Châu", lat: 21.4800, lng: 103.6800, tag: "DI TÍCH LỊCH SỬ", desc: "Di tích lịch sử ghi dấu ấn tại huyện Thuận Châu, tỉnh Sơn La.", videoUrl: "https://www.youtube.com/watch?v=SZXUQVDgtOw", imageUrl: "https://images.unsplash.com/photo-1464822759023-fed622ff2c3b" },
-      { name: "Hang Dơi", lat: 21.3200, lng: 104.6500, tag: "DANH THẮNG QUỐC GIA", desc: "Danh thắng quốc gia động Sơn Mộc Hương với hệ thống nhũ đá kỳ ảo tại Mộc Châu.", videoUrl: "https://www.youtube.com/watch?v=SZXUQVDgtOw", imageUrl: "https://images.unsplash.com/photo-1426604966848-d7adacbd02bff" },
-      { name: "Đỉnh Tà Xùa", lat: 21.4300, lng: 104.3800, tag: "DU LỊCH TRẢI NGHIỆM", desc: "Thiên đường săn mây nổi tiếng bậc nhất miền Bắc tại huyện Bắc Yên.", videoUrl: "https://www.youtube.com/watch?v=SZXUQVDgtOw", imageUrl: "https://images.unsplash.com/photo-1519681393784-d120267933ba" },
-      { name: "Văn Bia Quế Lâm Ngự Chế", lat: 21.3270, lng: 103.9080, tag: "DI TÍCH VĂN HÓA", desc: "Di tích lịch sử - văn hóa ghi lại bài thơ của vua Lê Thái Tông trên vách đá thành phố Sơn La.", videoUrl: "https://www.youtube.com/watch?v=SZXUQVDgtOw", imageUrl: "https://images.unsplash.com/photo-1507525428034-b723cf961d3e" },
-      { name: "Nhà Tù Sơn La", lat: 21.3250, lng: 103.9050, tag: "DI TÍCH LỊCH SỬ CÁCH MẠNG", desc: "Xây dựng năm 1908 trên đồi Khau Cả. Nơi tôi luyện ý chí kiên trung của các chiến sĩ cách mạng.", videoUrl: "https://www.youtube.com/watch?v=SZXUQVDgtOw", imageUrl: "https://images.unsplash.com/photo-1470071459604-3b5ec3a7fe05" },
-      { name: "Mường Bám", lat: 21.6500, lng: 103.4000, tag: "DI TÍCH ĐỊA PHƯƠNG", desc: "Vùng đất và di tích lịch sử tại xã Mường Bám, huyện Thuận Châu, tỉnh Sơn La.", videoUrl: "https://www.youtube.com/watch?v=SZXUQVDgtOw", imageUrl: "https://images.unsplash.com/photo-1447752875215-b2761acb3c5d" },
-      { name: "Đèo Pha Đin", lat: 21.5700, lng: 103.5500, tag: "DANH THẮNG LỊCH SỬ", desc: "Một trong 'tứ đại đỉnh đèo' hùng vĩ gắn liền với lịch sử kháng chiến.", videoUrl: "https://www.youtube.com/watch?v=SZXUQVDgtOw", imageUrl: "https://images.unsplash.com/photo-1501785888041-af3ef285b470" },
-      { name: "Ngã Ba Cò Nòi", lat: 21.1500, lng: 104.2800, tag: "DI TÍCH QUỐC GIA", desc: "Tọa độ lửa quyết định huyết mạch giao thông trong chiến dịch Điện Biên Phủ tại Mai Sơn.", videoUrl: "https://www.youtube.com/watch?v=SZXUQVDgtOw", imageUrl: "https://images.unsplash.com/photo-1433086966358-54859d0ed716" },
-      { name: "Di tích Việt Nam Lào", lat: 21.1000, lng: 103.8000, tag: "DI TÍCH HỮU NGHỊ", desc: "Khu di tích lịch sử ghi dấu tình hữu nghị đặc biệt Việt Nam - Lào.", videoUrl: "https://www.youtube.com/watch?v=SZXUQVDgtOw", imageUrl: "https://images.unsplash.com/photo-1422493756937-c533e14a5323" }
+      { name: "Bãi đá cổ Khe Hổ", lat: 21.9000, lng: 104.2500, tag: "KHẢO CỔ", desc: "Bãi đá khắc cổ tại xã Hang Chú, Bắc Yên.", videoUrl: "https://www.youtube.com/watch?v=SZXUQVDgtOw", img: "https://picsum.photos/200/120?random=1" },
+      { name: "Kỳ đài Thuận Châu", lat: 21.4800, lng: 103.6800, tag: "LỊCH SỬ", desc: "Di tích lịch sử ghi dấu ấn tại Thuận Châu.", videoUrl: "https://www.youtube.com/watch?v=SZXUQVDgtOw", img: "https://picsum.photos/200/120?random=2" },
+      { name: "Hang Dơi", lat: 21.3200, lng: 104.6500, tag: "DANH THẮNG", desc: "Động Sơn Mộc Hương tại Mộc Châu.", videoUrl: "https://www.youtube.com/watch?v=SZXUQVDgtOw", img: "https://picsum.photos/200/120?random=3" },
+      { name: "Đỉnh Tà Xùa", lat: 21.4300, lng: 104.3800, tag: "TRẢI NGHIỆM", desc: "Thiên đường săn mây tại Bắc Yên.", videoUrl: "https://www.youtube.com/watch?v=SZXUQVDgtOw", img: "https://picsum.photos/200/120?random=4" },
+      { name: "Văn Bia Quế Lâm Ngự Chế", lat: 21.3270, lng: 103.9080, tag: "VĂN HÓA", desc: "Bài thơ vua Lê Thái Tông trên vách đá TP Sơn La.", videoUrl: "https://www.youtube.com/watch?v=SZXUQVDgtOw", img: "https://picsum.photos/200/120?random=5" },
+      { name: "Nhà Tù Sơn La", lat: 21.3250, lng: 103.9050, tag: "CÁCH MẠNG", desc: "Di tích quốc gia đặc biệt trên đồi Khau Cả.", videoUrl: "https://www.youtube.com/watch?v=SZXUQVDgtOw", img: "https://picsum.photos/200/120?random=6" },
+      { name: "Mường Bám", lat: 21.6500, lng: 103.4000, tag: "ĐỊA PHƯƠNG", desc: "Vùng đất và di tích tại xã Mường Bám, Thuận Châu.", videoUrl: "https://www.youtube.com/watch?v=SZXUQVDgtOw", img: "https://picsum.photos/200/120?random=7" },
+      { name: "Đèo Pha Đin", lat: 21.5700, lng: 103.5500, tag: "LỊCH SỬ", desc: "Một trong tứ đại đỉnh đèo hùng vĩ.", videoUrl: "https://www.youtube.com/watch?v=SZXUQVDgtOw", img: "https://picsum.photos/200/120?random=8" },
+      { name: "Ngã Ba Cò Nòi", lat: 21.1500, lng: 104.2800, tag: "QUỐC GIA", desc: "Tọa độ lửa giao thông chiến dịch Điện Biên Phủ.", videoUrl: "https://www.youtube.com/watch?v=SZXUQVDgtOw", img: "https://picsum.photos/200/120?random=9" },
+      { name: "Di tích Việt Nam Lào", lat: 21.1000, lng: 103.8000, tag: "HỮU NGHỊ", desc: "Khu di tích ghi dấu tình hữu nghị đặc biệt.", videoUrl: "https://www.youtube.com/watch?v=SZXUQVDgtOw", img: "https://picsum.photos/200/120?random=10" }
     ];
 
-    // 4. Vòng lặp hiển thị tên dưới ghim và popup đầy đủ tính năng
+    // Thêm ghim và gắn nhãn tên hiển thị trực tiếp bên dưới
     locations.forEach(loc => {
       var marker = L.marker([loc.lat, loc.lng]).addTo(map);
 
-      // Hiển thị tên trực tiếp ngay dưới ghim
+      // Cấu hình hiển thị tên rõ ràng ngay dưới ghim
       marker.bindTooltip(loc.name, {
         permanent: true,
         direction: 'bottom',
-        className: 'map-label'
+        className: 'custom-label',
+        offset: [0, 5]
       });
 
-      var googleMapsUrl = `https://www.google.com/maps/dir/?api=1&destination=${loc.lat},${loc.lng}`;
+      var mapsUrl = `https://www.google.com/maps/dir/?api=1&destination=${loc.lat},${loc.lng}`;
 
       var popupHTML = `
-        <div style="font-family: sans-serif; width: 220px;">
-          <img src="${loc.imageUrl}" alt="${loc.name}" class="popup-img">
-          <div style="font-size: 10px; color: #27ae60; font-weight: bold; margin-bottom: 2px;">📍 ${loc.tag}</div>
-          <h3 style="margin: 0 0 4px 0; font-size: 14px; color: #222;">${loc.name}</h3>
-          <p style="font-size: 11px; color: #555; margin: 0 0 6px 0; line-height: 1.3;">${loc.desc}</p>
-          
-          <a href="${loc.videoUrl}" target="_blank" class="btn-custom btn-audio">▶ Xem Video Thuyết minh</a>
-          <a href="ar-ditich.html" class="btn-custom btn-ar">📷 Xem 3D / AR & Trắc nghiệm</a>
-          <a href="${googleMapsUrl}" target="_blank" class="btn-custom btn-route">🚗 Chỉ đường đến đây</a>
+        <div style="width: 200px;">
+          <img src="${loc.img}" class="popup-img">
+          <b style="color: #27ae60; font-size: 10px;">📍 ${loc.tag}</b>
+          <h3 style="margin: 2px 0; font-size: 14px;">${loc.name}</h3>
+          <p style="font-size: 11px; color: #555; margin: 0 0 6px 0;">${loc.desc}</p>
+          <a href="${loc.videoUrl}" target="_blank" class="btn" style="background: #c0392b;">▶ Xem Video Thuyết minh</a>
+          <a href="ar-ditich.html" class="btn" style="background: #d35400;">📷 Xem 3D / AR & Trắc nghiệm</a>
+          <a href="${mapsUrl}" target="_blank" class="btn" style="background: #2980b9;">🚗 Chỉ đường đến đây</a>
         </div>
       `;
-
       marker.bindPopup(popupHTML);
     });
   </script>
