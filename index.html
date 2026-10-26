@@ -13,11 +13,11 @@
     .top-header { background: #1b5e20; color: #fff; padding: 10px 15px; font-weight: bold; font-size: 14px; }
     #map { width: 100%; height: 92vh; }
     
-    /* Giao diện khung tên hiển thị ngay dưới ghim cực kỳ nổi bật */
+    /* Giao diện khung tên hiển thị ngay dưới ghim */
     .marker-card {
       background: #ffffff;
       border: 2px solid #1b5e20;
-      padding: 4px 8px;
+      padding: 3px 6px;
       border-radius: 6px;
       text-align: center;
       box-shadow: 0 3px 8px rgba(0,0,0,0.3);
@@ -51,21 +51,21 @@
       attribution: 'Bản đồ số Sơn La'
     }).addTo(map);
 
-    // 10 địa danh chuẩn xác
+    // 10 địa danh chuẩn xác kèm tên file ảnh trong kho dự án của cô
     const locations = [
-      { name: "Bãi đá cổ Khe Hổ", lat: 21.9000, lng: 104.2500, tag: "KHẢO CỔ", desc: "Bãi đá khắc cổ tại xã Hang Chú, Bắc Yên.", videoUrl: "https://www.youtube.com/watch?v=SZXUQVDgtOw", img: "https://picsum.photos/200/120?random=1" },
-      { name: "Kỳ đài Thuận Châu", lat: 21.4800, lng: 103.6800, tag: "LỊCH SỬ", desc: "Di tích lịch sử ghi dấu ấn tại Thuận Châu.", videoUrl: "https://www.youtube.com/watch?v=SZXUQVDgtOw", img: "https://picsum.photos/200/120?random=2" },
-      { name: "Hang Dơi", lat: 21.3200, lng: 104.6500, tag: "DANH THẮNG", desc: "Động Sơn Mộc Hương tại Mộc Châu.", videoUrl: "https://www.youtube.com/watch?v=SZXUQVDgtOw", img: "https://picsum.photos/200/120?random=3" },
-      { name: "Đỉnh Tà Xùa", lat: 21.4300, lng: 104.3800, tag: "TRẢI NGHIỆM", desc: "Thiên đường săn mây tại Bắc Yên.", videoUrl: "https://www.youtube.com/watch?v=SZXUQVDgtOw", img: "https://picsum.photos/200/120?random=4" },
-      { name: "Văn Bia Quế Lâm Ngự Chế", lat: 21.3270, lng: 103.9080, tag: "VĂN HÓA", desc: "Bài thơ vua Lê Thái Tông trên vách đá TP Sơn La.", videoUrl: "https://www.youtube.com/watch?v=SZXUQVDgtOw", img: "https://picsum.photos/200/120?random=5" },
-      { name: "Nhà Tù Sơn La", lat: 21.3250, lng: 103.9050, tag: "CÁCH MẠNG", desc: "Di tích quốc gia đặc biệt trên đồi Khau Cả.", videoUrl: "https://www.youtube.com/watch?v=SZXUQVDgtOw", img: "https://picsum.photos/200/120?random=6" },
-      { name: "Mường Bám", lat: 21.6500, lng: 103.4000, tag: "ĐỊA PHƯƠNG", desc: "Vùng đất và di tích tại xã Mường Bám, Thuận Châu.", videoUrl: "https://www.youtube.com/watch?v=SZXUQVDgtOw", img: "https://picsum.photos/200/120?random=7" },
-      { name: "Đèo Pha Đin", lat: 21.5700, lng: 103.5500, tag: "LỊCH SỬ", desc: "Một trong tứ đại đỉnh đèo hùng vĩ.", videoUrl: "https://www.youtube.com/watch?v=SZXUQVDgtOw", img: "https://picsum.photos/200/120?random=8" },
-      { name: "Ngã Ba Cò Nòi", lat: 21.1500, lng: 104.2800, tag: "QUỐC GIA", desc: "Tọa độ lửa giao thông chiến dịch Điện Biên Phủ.", videoUrl: "https://www.youtube.com/watch?v=SZXUQVDgtOw", img: "https://picsum.photos/200/120?random=9" },
-      { name: "Di tích Việt Nam Lào", lat: 21.1000, lng: 103.8000, tag: "HỮU NGHỊ", desc: "Khu di tích ghi dấu tình hữu nghị đặc biệt.", videoUrl: "https://www.youtube.com/watch?v=SZXUQVDgtOw", img: "https://picsum.photos/200/120?random=10" }
+      { name: "Bãi đá cổ Khe Hổ", lat: 21.9000, lng: 104.2500, tag: "KHẢO CỔ", desc: "Bãi đá khắc cổ tại xã Hang Chú, Bắc Yên.", videoUrl: "https://www.youtube.com/watch?v=SZXUQVDgtOw", img: "bai-da-co-khe-ho.jpg" },
+      { name: "Kỳ đài Thuận Châu", lat: 21.4800, lng: 103.6800, tag: "LỊCH SỬ", desc: "Di tích lịch sử ghi dấu ấn tại Thuận Châu.", videoUrl: "https://www.youtube.com/watch?v=SZXUQVDgtOw", img: "ky-dai-thuan-chau.jpg" },
+      { name: "Hang Dơi", lat: 21.3200, lng: 104.6500, tag: "DANH THẮNG", desc: "Động Sơn Mộc Hương tại Mộc Châu.", videoUrl: "https://www.youtube.com/watch?v=SZXUQVDgtOw", img: "hang-doi.jpg" },
+      { name: "Đỉnh Tà Xùa", lat: 21.4300, lng: 104.3800, tag: "TRẢI NGHIỆM", desc: "Thiên đường săn mây tại Bắc Yên.", videoUrl: "https://www.youtube.com/watch?v=SZXUQVDgtOw", img: "dinh-ta-xua.jpg" },
+      { name: "Văn Bia Quế Lâm Ngự Chế", lat: 21.3270, lng: 103.9080, tag: "VĂN HÓA", desc: "Bài thơ vua Lê Thái Tông trên vách đá TP Sơn La.", videoUrl: "https://www.youtube.com/watch?v=SZXUQVDgtOw", img: "van-bia-que-lam.jpg" },
+      { name: "Nhà Tù Sơn La", lat: 21.3250, lng: 103.9050, tag: "CÁCH MẠNG", desc: "Di tích quốc gia đặc biệt trên đồi Khau Cả.", videoUrl: "https://www.youtube.com/watch?v=SZXUQVDgtOw", img: "nha-tu-son-la.jpg" },
+      { name: "Mường Bám", lat: 21.6500, lng: 103.4000, tag: "ĐỊA PHƯƠNG", desc: "Vùng đất và di tích tại xã Mường Bám, Thuận Châu.", videoUrl: "https://www.youtube.com/watch?v=SZXUQVDgtOw", img: "muong-bam.jpg" },
+      { name: "Đèo Pha Đin", lat: 21.5700, lng: 103.5500, tag: "LỊCH SỬ", desc: "Một trong tứ đại đỉnh đèo hùng vĩ.", videoUrl: "https://www.youtube.com/watch?v=SZXUQVDgtOw", img: "deo-pha-din.jpg" },
+      { name: "Ngã Ba Cò Nòi", lat: 21.1500, lng: 104.2800, tag: "QUỐC GIA", desc: "Tọa độ lửa giao thông chiến dịch Điện Biên Phủ.", videoUrl: "https://www.youtube.com/watch?v=SZXUQVDgtOw", img: "nga-ba-co-noi.jpg" },
+      { name: "Di tích Việt Nam Lào", lat: 21.1000, lng: 103.8000, tag: "HỮU NGHỊ", desc: "Khu di tích ghi dấu tình hữu nghị đặc biệt.", videoUrl: "https://www.youtube.com/watch?v=SZXUQVDgtOw", img: "viet-nam-lao.jpg" }
     ];
 
-    // Thêm các điểm với tên hiển thị trực tiếp bằng Custom HTML Icon
+    // Thêm các điểm với tên hiển thị trực tiếp và popup đầy đủ tính năng
     locations.forEach(loc => {
       var customIcon = L.divIcon({
         className: 'custom-map-icon',
@@ -87,7 +87,7 @@
 
       var popupHTML = `
         <div style="width: 200px;">
-          <img src="${loc.img}" class="popup-img">
+          <img src="${loc.img}" class="popup-img" onerror="this.src='https://picsum.photos/200/120?random=1'">
           <b style="color: #27ae60; font-size: 10px;">📍 ${loc.tag}</b>
           <h3 style="margin: 2px 0; font-size: 14px;">${loc.name}</h3>
           <p style="font-size: 11px; color: #555; margin: 0 0 6px 0;">${loc.desc}</p>
