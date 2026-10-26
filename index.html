@@ -11,7 +11,6 @@
   <style>
     body { margin: 0; padding: 0; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; }
     
-    /* Thanh tiêu đề giống ảnh mẫu */
     .top-header {
       background: #1b5e20; color: #fff; padding: 10px 15px; font-weight: bold; font-size: 14px;
     }
@@ -19,15 +18,15 @@
     
     #map { width: 100%; height: calc(100vh - 50px); }
     
-    /* Tùy chỉnh nút bấm giống ảnh mẫu */
-    .btn-ar-custom {
-      display: block; width: 100%; background: #d35400; color: #fff; text-align: center;
-      padding: 8px 0; border-radius: 6px; text-decoration: none; font-weight: bold; margin-top: 8px; font-size: 13px;
+    /* Tùy chỉnh các nút bấm trong popup */
+    .btn-custom {
+      display: block; width: 100%; text-align: center;
+      padding: 7px 0; border-radius: 6px; text-decoration: none; 
+      font-weight: bold; margin-top: 6px; font-size: 12px;
     }
-    .btn-audio-custom {
-      display: block; width: 100%; background: #c0392b; color: #fff; text-align: center;
-      padding: 6px 0; border-radius: 6px; text-decoration: none; font-weight: bold; margin-top: 6px; font-size: 12px;
-    }
+    .btn-audio { background: #c0392b; color: #fff; }
+    .btn-ar { background: #d35400; color: #fff; }
+    .btn-route { background: #2980b9; color: #fff; }
   </style>
 </head>
 <body>
@@ -51,7 +50,27 @@
       attribution: '&copy; Bản đồ số Sơn La'
     }).addTo(map);
 
-    // 2. 10 địa danh chính xác theo yêu cầu của cô
+    // 2. Định vị vị trí hiện tại của người dùng trên bản đồ (GPS)
+    if (navigator.geolocation) {
+      navigator.geolocation.getCurrentPosition(function(position) {
+        var userLat = position.coords.latitude;
+        var userLng = position.coords.longitude;
+
+        // Thêm điểm ghim vị trí của bạn
+        var userMarker = L.marker([userLat, userLng], {
+          icon: L.divIcon({
+            className: 'user-location-icon',
+            html: '<div style="background-color: #2980b9; width: 14px; height: 14px; border: 2px solid white; border-radius: 50%; box-shadow: 0 0 5px rgba(0,0,0,0.5);"></div>'
+          })
+        }).addTo(map);
+
+        userMarker.bindPopup("<b>📍 Vị trí hiện tại của bạn</b>").openPopup();
+      }, function(error) {
+        console.log("Không lấy được vị trí GPS: " + error.message);
+      });
+    }
+
+    // 3. 10 địa danh chính xác
     const locations = [
       { name: "Bãi đá cổ Khe Hổ", lat: 21.9000, lng: 104.2500, tag: "DI TÍCH KHẢO CỔ", desc: "Di tích khảo cổ học bãi đá khắc cổ độc đáo tại xã Hang Chú, huyện Bắc Yên.", videoUrl: "https://www.youtube.com/watch?v=SZXUQVDgtOw" },
       { name: "Kỳ đài Thuận Châu", lat: 21.4800, lng: 103.6800, tag: "DI TÍCH LỊCH SỬ", desc: "Di tích lịch sử ghi dấu ấn tại huyện Thuận Châu, tỉnh Sơn La.", videoUrl: "https://www.youtube.com/watch?v=SZXUQVDgtOw" },
@@ -65,9 +84,12 @@
       { name: "Di tích Việt Nam Lào", lat: 21.1000, lng: 103.8000, tag: "DI TÍCH HỮU NGHỊ", desc: "Khu di tích lịch sử ghi dấu tình hữu nghị đặc biệt Việt Nam - Lào.", videoUrl: "https://www.youtube.com/watch?v=SZXUQVDgtOw" }
     ];
 
-    // 3. Đưa các điểm lên bản đồ với popup chuẩn giao diện mẫu
+    // 4. Đưa các điểm lên bản đồ và tích hợp nút chỉ đường qua Google Maps
     locations.forEach(loc => {
       var marker = L.marker([loc.lat, loc.lng]).addTo(map);
+
+      // Link tự động mở chỉ đường Google Maps đến tọa độ (lat, lng) của địa danh
+      var googleMapsUrl = `https://www.google.com/maps/dir/?api=1&destination=${loc.lat},${loc.lng}`;
 
       var popupHTML = `
         <div style="font-family: sans-serif; width: 220px;">
@@ -76,10 +98,13 @@
           <p style="font-size: 12px; color: #555; margin: 0 0 8px 0; line-height: 1.4;">${loc.desc}</p>
           
           <!-- Nút thuyết minh xem video YouTube -->
-          <a href="${loc.videoUrl}" target="_blank" class="btn-audio-custom">▶ Xem Video Thuyết minh</a>
+          <a href="${loc.videoUrl}" target="_blank" class="btn-custom btn-audio">▶ Xem Video Thuyết minh</a>
           
           <!-- Nút 3D / AR chuyển sang quét QR trắc nghiệm -->
-          <a href="ar-ditich.html" class="btn-ar-custom">Xem 3D / AR & Trắc nghiệm</a>
+          <a href="ar-ditich.html" class="btn-custom btn-ar">📷 Xem 3D / AR & Trắc nghiệm</a>
+
+          <!-- Nút chỉ đường (Mở Google Maps dẫn đường tới điểm này) -->
+          <a href="${googleMapsUrl}" target="_blank" class="btn-custom btn-route">🚗 Chỉ đường đến đây</a>
         </div>
       `;
 
