@@ -51,18 +51,18 @@
       attribution: 'Bản đồ số Sơn La'
     }).addTo(map);
 
-    // 10 địa danh chuẩn xác kèm tên file ảnh trong kho dự án của cô
+    // Danh sách 10 địa danh đã cập nhật "doi"
     const locations = [
-      { name: "Bãi đá cổ Khe Hổ", lat: 21.9000, lng: 104.2500, tag: "KHẢO CỔ", desc: "Bãi đá khắc cổ tại xã Hang Chú, Bắc Yên.", videoUrl: "https://www.youtube.com/watch?v=SZXUQVDgtOw", img: "bai-da-co-khe-ho.jpg" },
-      { name: "Kỳ đài Thuận Châu", lat: 21.4800, lng: 103.6800, tag: "LỊCH SỬ", desc: "Di tích lịch sử ghi dấu ấn tại Thuận Châu.", videoUrl: "https://www.youtube.com/watch?v=SZXUQVDgtOw", img: "ky-dai-thuan-chau.jpg" },
-      { name: "Hang Dơi", lat: 21.3200, lng: 104.6500, tag: "DANH THẮNG", desc: "Động Sơn Mộc Hương tại Mộc Châu.", videoUrl: "https://www.youtube.com/watch?v=SZXUQVDgtOw", img: "hang-doi.jpg" },
-      { name: "Đỉnh Tà Xùa", lat: 21.4300, lng: 104.3800, tag: "TRẢI NGHIỆM", desc: "Thiên đường săn mây tại Bắc Yên.", videoUrl: "https://www.youtube.com/watch?v=SZXUQVDgtOw", img: "dinh-ta-xua.jpg" },
-      { name: "Văn Bia Quế Lâm Ngự Chế", lat: 21.3270, lng: 103.9080, tag: "VĂN HÓA", desc: "Bài thơ vua Lê Thái Tông trên vách đá TP Sơn La.", videoUrl: "https://www.youtube.com/watch?v=SZXUQVDgtOw", img: "van-bia-que-lam.jpg" },
-      { name: "Nhà Tù Sơn La", lat: 21.3250, lng: 103.9050, tag: "CÁCH MẠNG", desc: "Di tích quốc gia đặc biệt trên đồi Khau Cả.", videoUrl: "https://www.youtube.com/watch?v=SZXUQVDgtOw", img: "nha-tu-son-la.jpg" },
-      { name: "Mường Bám", lat: 21.6500, lng: 103.4000, tag: "ĐỊA PHƯƠNG", desc: "Vùng đất và di tích tại xã Mường Bám, Thuận Châu.", videoUrl: "https://www.youtube.com/watch?v=SZXUQVDgtOw", img: "muong-bam.jpg" },
-      { name: "Đèo Pha Đin", lat: 21.5700, lng: 103.5500, tag: "LỊCH SỬ", desc: "Một trong tứ đại đỉnh đèo hùng vĩ.", videoUrl: "https://www.youtube.com/watch?v=SZXUQVDgtOw", img: "deo-pha-din.jpg" },
-      { name: "Ngã Ba Cò Nòi", lat: 21.1500, lng: 104.2800, tag: "QUỐC GIA", desc: "Tọa độ lửa giao thông chiến dịch Điện Biên Phủ.", videoUrl: "https://www.youtube.com/watch?v=SZXUQVDgtOw", img: "nga-ba-co-noi.jpg" },
-      { name: "Di tích Việt Nam Lào", lat: 21.1000, lng: 103.8000, tag: "HỮU NGHỊ", desc: "Khu di tích ghi dấu tình hữu nghị đặc biệt.", videoUrl: "https://www.youtube.com/watch?v=SZXUQVDgtOw", img: "viet-nam-lao.jpg" }
+      { name: "Bãi đá cổ Khe Hổ", lat: 21.9000, lng: 104.2500, tag: "KHẢO CỔ", desc: "Bãi đá khắc cổ tại xã Hang Chú, Bắc Yên.", videoUrl: "https://www.youtube.com/watch?v=SZXUQVDgtOw", img: "daco.jpg" },
+      { name: "Kỳ đài Thuận Châu", lat: 21.4800, lng: 103.6800, tag: "LỊCH SỬ", desc: "Di tích lịch sử ghi dấu ấn tại Thuận Châu.", videoUrl: "https://www.youtube.com/watch?v=SZXUQVDgtOw", img: "chau.jpg" },
+      { name: "doi", lat: 21.3200, lng: 104.6500, tag: "DANH THẮNG", desc: "Động Sơn Mộc Hương tại Mộc Châu.", videoUrl: "https://www.youtube.com/watch?v=SZXUQVDgtOw", img: "Hang Dơi.jpg" },
+      { name: "Đỉnh Tà Xùa", lat: 21.4300, lng: 104.3800, tag: "TRẢI NGHIỆM", desc: "Thiên đường săn mây tại Bắc Yên.", videoUrl: "https://www.youtube.com/watch?v=SZXUQVDgtOw", img: "xua.jpg" },
+      { name: "Văn Bia Quế Lâm Ngự Chế", lat: 21.3270, lng: 103.9080, tag: "VĂN HÓA", desc: "Bài thơ vua Lê Thái Tông trên vách đá TP Sơn La.", videoUrl: "https://www.youtube.com/watch?v=SZXUQVDgtOw", img: "vua.jpg" },
+      { name: "Nhà Tù Sơn La", lat: 21.3250, lng: 103.9050, tag: "CÁCH MẠNG", desc: "Di tích quốc gia đặc biệt trên đồi Khau Cả.", videoUrl: "https://www.youtube.com/watch?v=SZXUQVDgtOw", img: "tu.jpg" },
+      { name: "Mường Bám", lat: 21.6500, lng: 103.4000, tag: "ĐỊA PHƯƠNG", desc: "Vùng đất và di tích tại xã Mường Bám, Thuận Châu.", videoUrl: "https://www.youtube.com/watch?v=SZXUQVDgtOw", img: "va.jpg" },
+      { name: "Đèo Pha Đin", lat: 21.5700, lng: 103.5500, tag: "LỊCH SỬ", desc: "Một trong tứ đại đỉnh đèo hùng vĩ.", videoUrl: "https://www.youtube.com/watch?v=SZXUQVDgtOw", img: "phadin.jpg" },
+      { name: "Ngã Ba Cò Nòi", lat: 21.1500, lng: 104.2800, tag: "QUỐC GIA", desc: "Tọa độ lửa giao thông chiến dịch Điện Biên Phủ.", videoUrl: "https://www.youtube.com/watch?v=SZXUQVDgtOw", img: "noi.jpg" },
+      { name: "Di tích Việt Nam Lào", lat: 21.1000, lng: 103.8000, tag: "HỮU NGHỊ", desc: "Khu di tích ghi dấu tình hữu nghị đặc biệt.", videoUrl: "https://www.youtube.com/watch?v=SZXUQVDgtOw", img: "Laoviet.jpg" }
     ];
 
     // Thêm các điểm với tên hiển thị trực tiếp và popup đầy đủ tính năng
