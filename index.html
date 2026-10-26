@@ -13,17 +13,21 @@
     .top-header { background: #1b5e20; color: #fff; padding: 10px 15px; font-weight: bold; font-size: 14px; }
     #map { width: 100%; height: 92vh; }
     
-    /* Tùy chỉnh phong cách tên hiện ngay dưới ghim cho thật nổi bật */
-    .custom-label {
-      background: #ffffff !important;
-      border: 2px solid #1b5e20 !important;
-      color: #1b5e20 !important;
-      font-weight: bold !important;
-      font-size: 12px !important;
-      padding: 3px 8px !important;
-      border-radius: 6px !important;
-      box-shadow: 0 2px 6px rgba(0,0,0,0.3) !important;
+    /* Giao diện khung tên hiển thị ngay dưới ghim cực kỳ nổi bật */
+    .marker-card {
+      background: #ffffff;
+      border: 2px solid #1b5e20;
+      padding: 4px 8px;
+      border-radius: 6px;
+      text-align: center;
+      box-shadow: 0 3px 8px rgba(0,0,0,0.3);
       white-space: nowrap;
+    }
+    .marker-title {
+      font-weight: bold;
+      font-size: 11px;
+      color: #1b5e20;
+      display: block;
     }
 
     .popup-img { width: 100%; height: 110px; object-fit: cover; border-radius: 4px; margin-bottom: 5px; }
@@ -61,17 +65,23 @@
       { name: "Di tích Việt Nam Lào", lat: 21.1000, lng: 103.8000, tag: "HỮU NGHỊ", desc: "Khu di tích ghi dấu tình hữu nghị đặc biệt.", videoUrl: "https://www.youtube.com/watch?v=SZXUQVDgtOw", img: "https://picsum.photos/200/120?random=10" }
     ];
 
-    // Thêm ghim và gắn nhãn tên hiển thị trực tiếp bên dưới
+    // Thêm các điểm với tên hiển thị trực tiếp bằng Custom HTML Icon
     locations.forEach(loc => {
-      var marker = L.marker([loc.lat, loc.lng]).addTo(map);
-
-      // Cấu hình hiển thị tên rõ ràng ngay dưới ghim
-      marker.bindTooltip(loc.name, {
-        permanent: true,
-        direction: 'bottom',
-        className: 'custom-label',
-        offset: [0, 5]
+      var customIcon = L.divIcon({
+        className: 'custom-map-icon',
+        html: `
+          <div style="text-align: center;">
+            <div style="background: #d32f2f; width: 12px; height: 12px; border: 2px solid #fff; border-radius: 50%; margin: 0 auto 2px auto; box-shadow: 0 0 4px rgba(0,0,0,0.4);"></div>
+            <div class="marker-card">
+              <span class="marker-title">📍 ${loc.name}</span>
+            </div>
+          </div>
+        `,
+        iconSize: [120, 45],
+        iconAnchor: [60, 6]
       });
+
+      var marker = L.marker([loc.lat, loc.lng], { icon: customIcon }).addTo(map);
 
       var mapsUrl = `https://www.google.com/maps/dir/?api=1&destination=${loc.lat},${loc.lng}`;
 
