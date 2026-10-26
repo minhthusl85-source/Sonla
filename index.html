@@ -13,24 +13,36 @@
     .top-header { background: #1b5e20; color: #fff; padding: 10px 15px; font-weight: bold; font-size: 14px; }
     #map { width: 100%; height: 92vh; }
     
-    /* Giao diện khung tên hiển thị ngay dưới ghim */
-    .marker-card {
+    /* Giao diện hiển thị trực tiếp Ảnh và Tên ngay trên bản đồ */
+    .map-badge {
       background: #ffffff;
       border: 2px solid #1b5e20;
-      padding: 3px 6px;
       border-radius: 6px;
+      padding: 3px;
       text-align: center;
-      box-shadow: 0 3px 8px rgba(0,0,0,0.3);
-      white-space: nowrap;
+      box-shadow: 0 3px 8px rgba(0,0,0,0.4);
+      width: 100px;
     }
-    .marker-title {
+    .badge-img {
+      width: 94px;
+      height: 55px;
+      object-fit: cover;
+      border-radius: 4px;
+      display: block;
+      margin-bottom: 2px;
+    }
+    .badge-title {
       font-weight: bold;
-      font-size: 11px;
+      font-size: 10px;
       color: #1b5e20;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
       display: block;
     }
 
-    .popup-img { width: 100%; height: 110px; object-fit: cover; border-radius: 4px; margin-bottom: 5px; }
+    /* Giao diện trong Popup khi bấm vào */
+    .popup-img { width: 100%; height: 120px; object-fit: cover; border-radius: 6px; margin-bottom: 6px; }
     .btn { display: block; width: 100%; text-align: center; padding: 6px 0; border-radius: 4px; text-decoration: none; font-weight: bold; margin-top: 5px; font-size: 12px; color: #fff; }
   </style>
 </head>
@@ -51,34 +63,48 @@
       attribution: 'Bản đồ số Sơn La'
     }).addTo(map);
 
-    // Danh sách 10 địa danh đã cập nhật "doi"
+    // Định vị GPS người dùng
+    if (navigator.geolocation) {
+      navigator.geolocation.getCurrentPosition(function(position) {
+        var userLat = position.coords.latitude;
+        var userLng = position.coords.longitude;
+        var userIcon = L.divIcon({
+          className: 'user-gps-icon',
+          html: '<div style="background-color: #2980b9; width: 16px; height: 16px; border: 3px solid white; border-radius: 50%; box-shadow: 0 0 8px rgba(0,0,0,0.6);"></div>',
+          iconSize: [16, 16],
+          iconAnchor: [8, 8]
+        });
+        var userMarker = L.marker([userLat, userLng], { icon: userIcon }).addTo(map);
+        userMarker.bindPopup("<b>📍 Vị trí hiện tại của bạn</b>");
+      });
+    }
+
+    // Danh sách 10 địa danh kèm tên file ảnh thực tế trong thư mục của cô
     const locations = [
-      { name: "Bãi đá cổ Khe Hổ", lat: 21.9000, lng: 104.2500, tag: "KHẢO CỔ", desc: "Bãi đá khắc cổ tại xã Hang Chú, Bắc Yên.", videoUrl: "https://www.youtube.com/watch?v=SZXUQVDgtOw", img: "daco.jpg" },
-      { name: "Kỳ đài Thuận Châu", lat: 21.4800, lng: 103.6800, tag: "LỊCH SỬ", desc: "Di tích lịch sử ghi dấu ấn tại Thuận Châu.", videoUrl: "https://www.youtube.com/watch?v=SZXUQVDgtOw", img: "chau.jpg" },
-      { name: "doi", lat: 21.3200, lng: 104.6500, tag: "DANH THẮNG", desc: "Động Sơn Mộc Hương tại Mộc Châu.", videoUrl: "https://www.youtube.com/watch?v=SZXUQVDgtOw", img: "Hang Dơi.jpg" },
-      { name: "Đỉnh Tà Xùa", lat: 21.4300, lng: 104.3800, tag: "TRẢI NGHIỆM", desc: "Thiên đường săn mây tại Bắc Yên.", videoUrl: "https://www.youtube.com/watch?v=SZXUQVDgtOw", img: "xua.jpg" },
-      { name: "Văn Bia Quế Lâm Ngự Chế", lat: 21.3270, lng: 103.9080, tag: "VĂN HÓA", desc: "Bài thơ vua Lê Thái Tông trên vách đá TP Sơn La.", videoUrl: "https://www.youtube.com/watch?v=SZXUQVDgtOw", img: "vua.jpg" },
-      { name: "Nhà Tù Sơn La", lat: 21.3250, lng: 103.9050, tag: "CÁCH MẠNG", desc: "Di tích quốc gia đặc biệt trên đồi Khau Cả.", videoUrl: "https://www.youtube.com/watch?v=SZXUQVDgtOw", img: "tu.jpg" },
-      { name: "Mường Bám", lat: 21.6500, lng: 103.4000, tag: "ĐỊA PHƯƠNG", desc: "Vùng đất và di tích tại xã Mường Bám, Thuận Châu.", videoUrl: "https://www.youtube.com/watch?v=SZXUQVDgtOw", img: "va.jpg" },
-      { name: "Đèo Pha Đin", lat: 21.5700, lng: 103.5500, tag: "LỊCH SỬ", desc: "Một trong tứ đại đỉnh đèo hùng vĩ.", videoUrl: "https://www.youtube.com/watch?v=SZXUQVDgtOw", img: "phadin.jpg" },
-      { name: "Ngã Ba Cò Nòi", lat: 21.1500, lng: 104.2800, tag: "QUỐC GIA", desc: "Tọa độ lửa giao thông chiến dịch Điện Biên Phủ.", videoUrl: "https://www.youtube.com/watch?v=SZXUQVDgtOw", img: "noi.jpg" },
-      { name: "Di tích Việt Nam Lào", lat: 21.1000, lng: 103.8000, tag: "HỮU NGHỊ", desc: "Khu di tích ghi dấu tình hữu nghị đặc biệt.", videoUrl: "https://www.youtube.com/watch?v=SZXUQVDgtOw", img: "Laoviet.jpg" }
+      { name: "Bãi đá cổ Khe Hổ", lat: 21.9000, lng: 104.2500, tag: "KHẢO CỔ", desc: "Bãi đá khắc cổ tại xã Hang Chú, Bắc Yên.", videoUrl: "https://www.youtube.com/watch?v=SZXUQVDgtOw", img: "daco.jpg" },[cite: 4]
+      { name: "Kỳ đài Thuận Châu", lat: 21.4800, lng: 103.6800, tag: "LỊCH SỬ", desc: "Di tích lịch sử ghi dấu ấn tại Thuận Châu.", videoUrl: "https://www.youtube.com/watch?v=SZXUQVDgtOw", img: "chau.jpg" },[cite: 3]
+      { name: "doi", lat: 21.3200, lng: 104.6500, tag: "DANH THẮNG", desc: "Động Sơn Mộc Hương tại Mộc Châu.", videoUrl: "https://www.youtube.com/watch?v=SZXUQVDgtOw", img: "Hang Dơi.jpg" },[cite: 5]
+      { name: "Đỉnh Tà Xùa", lat: 21.4300, lng: 104.3800, tag: "TRẢI NGHIỆM", desc: "Thiên đường săn mây tại Bắc Yên.", videoUrl: "https://www.youtube.com/watch?v=SZXUQVDgtOw", img: "xua.jpg" },[cite: 12]
+      { name: "Văn Bia Quế Lâm Ngự Chế", lat: 21.3270, lng: 103.9080, tag: "VĂN HÓA", desc: "Bài thơ vua Lê Thái Tông trên vách đá TP Sơn La.", videoUrl: "https://www.youtube.com/watch?v=SZXUQVDgtOw", img: "vua.jpg" },[cite: 11]
+      { name: "Nhà Tù Sơn La", lat: 21.3250, lng: 103.9050, tag: "CÁCH MẠNG", desc: "Di tích quốc gia đặc biệt trên đồi Khau Cả.", videoUrl: "https://www.youtube.com/watch?v=SZXUQVDgtOw", img: "tu.jpg" },[cite: 9]
+      { name: "Mường Bám", lat: 21.6500, lng: 103.4000, tag: "ĐỊA PHƯƠNG", desc: "Vùng đất và di tích tại xã Mường Bám, Thuận Châu.", videoUrl: "https://www.youtube.com/watch?v=SZXUQVDgtOw", img: "va.jpg" },[cite: 10]
+      { name: "Đèo Pha Đin", lat: 21.5700, lng: 103.5500, tag: "LỊCH SỬ", desc: "Một trong tứ đại đỉnh đèo hùng vĩ.", videoUrl: "https://www.youtube.com/watch?v=SZXUQVDgtOw", img: "phadin.jpg" },[cite: 8]
+      { name: "Ngã Ba Cò Nòi", lat: 21.1500, lng: 104.2800, tag: "QUỐC GIA", desc: "Tọa độ lửa giao thông chiến dịch Điện Biên Phủ.", videoUrl: "https://www.youtube.com/watch?v=SZXUQVDgtOw", img: "noi.jpg" },[cite: 7]
+      { name: "Di tích Việt Nam Lào", lat: 21.1000, lng: 103.8000, tag: "HỮU NGHỊ", desc: "Khu di tích ghi dấu tình hữu nghị đặc biệt.", videoUrl: "https://www.youtube.com/watch?v=SZXUQVDgtOw", img: "Laoviet.jpg" }[cite: 6]
     ];
 
-    // Thêm các điểm với tên hiển thị trực tiếp và popup đầy đủ tính năng
+    // Hiển thị trực tiếp Ảnh và Tên ngay trên bản đồ
     locations.forEach(loc => {
       var customIcon = L.divIcon({
-        className: 'custom-map-icon',
+        className: 'custom-badge-icon',
         html: `
-          <div style="text-align: center;">
-            <div style="background: #d32f2f; width: 12px; height: 12px; border: 2px solid #fff; border-radius: 50%; margin: 0 auto 2px auto; box-shadow: 0 0 4px rgba(0,0,0,0.4);"></div>
-            <div class="marker-card">
-              <span class="marker-title">📍 ${loc.name}</span>
-            </div>
+          <div class="map-badge">
+            <img src="${loc.img}" class="badge-img" onerror="this.src='https://picsum.photos/94/55?random=1'">
+            <span class="badge-title">${loc.name}</span>
           </div>
         `,
-        iconSize: [120, 45],
-        iconAnchor: [60, 6]
+        iconSize: [100, 75],
+        iconAnchor: [50, 75]
       });
 
       var marker = L.marker([loc.lat, loc.lng], { icon: customIcon }).addTo(map);
@@ -86,8 +112,8 @@
       var mapsUrl = `https://www.google.com/maps/dir/?api=1&destination=${loc.lat},${loc.lng}`;
 
       var popupHTML = `
-        <div style="width: 200px;">
-          <img src="${loc.img}" class="popup-img" onerror="this.src='https://picsum.photos/200/120?random=1'">
+        <div style="width: 210px;">
+          <img src="${loc.img}" class="popup-img" alt="${loc.name}" onerror="this.src='https://picsum.photos/200/120?random=1'">
           <b style="color: #27ae60; font-size: 10px;">📍 ${loc.tag}</b>
           <h3 style="margin: 2px 0; font-size: 14px;">${loc.name}</h3>
           <p style="font-size: 11px; color: #555; margin: 0 0 6px 0;">${loc.desc}</p>
