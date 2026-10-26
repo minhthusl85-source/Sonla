@@ -4,7 +4,9 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Bản đồ số Di tích & Di sản Sơn La</title>
+  
   <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
+  
   <style>
     /* Chuẩn hóa phông chữ Times New Roman, cỡ 14pt toàn trang */
     body, .leaflet-container { 
@@ -12,6 +14,7 @@
       padding: 0; 
       font-family: "Times New Roman", Times, serif !important; 
       font-size: 14pt !important; 
+      background-color: #f0f2f5;
     }
     
     /* Căn lề hai bên, khoảng cách đoạn 6pt, không khoảng trống tự do */
@@ -21,28 +24,98 @@
       padding: 0 !important; 
       line-height: normal;
     }
+    
     /* Các tiêu đề in đậm, khoảng cách 6pt */
-    h1, h2, h3, .marker-title, .top-header, b { 
+    h1, h2, h3, h4, .marker-title, b { 
       font-weight: bold !important; 
       margin: 0 0 6pt 0 !important; 
     }
 
-    .top-header { 
-      background: #1b5e20; 
+    /* BANNER TO RỘNG */
+    .hero-banner { 
+      background: linear-gradient(rgba(27, 94, 32, 0.85), rgba(46, 125, 50, 0.85)), url('https://images.unsplash.com/photo-1519681393784-d120267933ba?auto=format&fit=crop&w=1920&q=80') center/cover;
       color: #fff; 
-      padding: 10pt; 
+      padding: 30pt 15pt; 
       text-align: center; 
+      box-shadow: 0 4px 10px rgba(0,0,0,0.4);
+      position: relative;
+      border-bottom: 4px solid #f39c12; 
     }
-    #map { width: 100%; height: 92vh; }
+    .hero-title {
+      font-size: 24pt !important; 
+      text-transform: uppercase;
+      text-shadow: 2px 2px 5px rgba(0,0,0,0.6);
+      margin: 0 !important;
+    }
+
+    /* BỐ CỤC 3 CỘT */
+    .content-wrapper {
+      display: flex;
+      flex-direction: row;
+      justify-content: space-between;
+      gap: 15pt;
+      padding: 15pt;
+      max-width: 1600px;
+      margin: 0 auto;
+    }
+
+    .sidebar {
+      flex: 1; /* Cột trái và phải chiếm 1 phần */
+      background: #ffffff;
+      border: 2px solid #1b5e20;
+      border-radius: 8px;
+      padding: 12pt;
+      box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+      height: fit-content;
+    }
     
-    /* Khung hiển thị Ảnh và Tên trực tiếp ngay trên bản đồ */
+    .sidebar-title {
+      color: #1b5e20;
+      border-bottom: 2px solid #f39c12;
+      padding-bottom: 4pt;
+      text-align: center;
+      text-transform: uppercase;
+    }
+
+    .main-map-area {
+      flex: 2.5; /* Cột giữa chứa bản đồ to nhất (2.5 phần) */
+      background: #ffffff;
+      border: 2px solid #1b5e20;
+      border-radius: 8px;
+      padding: 8pt;
+      box-shadow: 0 4px 10px rgba(0,0,0,0.2);
+    }
+
+    #map { 
+      width: 100%; 
+      height: 70vh; 
+      border-radius: 6px;
+    }
+    
+    /* Responsive cho màn hình nhỏ */
+    @media (max-width: 1024px) {
+      .content-wrapper { flex-direction: column; }
+      #map { height: 50vh; }
+    }
+
+    /* CSS hiển thị Ảnh và Tên Bản đồ */
+    .marker-wrapper {
+      transition: transform 0.3s ease;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+    }
+    .marker-wrapper:hover {
+      transform: translateY(-8px) scale(1.05);
+      z-index: 1000 !important;
+    }
     .map-badge {
       background: #ffffff;
       border: 2px solid #1b5e20;
-      border-radius: 6px;
+      border-radius: 8px;
       padding: 4px;
       text-align: center;
-      box-shadow: 0 3px 8px rgba(0,0,0,0.4);
+      box-shadow: 0 4px 10px rgba(0,0,0,0.3);
       width: 125px;
     }
     .badge-img {
@@ -51,7 +124,7 @@
       object-fit: cover;
       border-radius: 4px;
       display: block;
-      margin: 0 0 6pt 0 !important;
+      margin: 0 0 4pt 0 !important;
     }
     .marker-title {
       color: #1b5e20;
@@ -59,38 +132,65 @@
       white-space: nowrap;
       overflow: hidden;
       text-overflow: ellipsis;
-      font-size: 14pt !important;
+      font-size: 13pt !important;
+    }
+    .pin-pointer {
+      width: 0; height: 0; 
+      border-left: 8px solid transparent;
+      border-right: 8px solid transparent;
+      border-top: 12px solid #1b5e20;
+      margin-top: -2px;
+      filter: drop-shadow(0 4px 2px rgba(0,0,0,0.3));
     }
 
-    /* Giao diện bên trong bảng thông tin (Popup) */
-    .popup-img { 
-      width: 100%; 
-      height: 120px; 
-      object-fit: cover; 
-      border-radius: 4px; 
-      margin: 0 0 6pt 0 !important; 
-    }
+    /* Popup */
+    .leaflet-popup-content-wrapper { border-radius: 12px; box-shadow: 0 6px 16px rgba(0,0,0,0.3); }
+    .popup-img { width: 100%; height: 130px; object-fit: cover; border-radius: 6px; margin: 0 0 6pt 0 !important; border: 1px solid #e0e0e0; }
     .btn { 
-      display: block; 
-      width: 100%; 
-      text-align: center; 
-      padding: 6pt 0; 
-      border-radius: 4px; 
-      text-decoration: none; 
-      font-weight: bold; 
-      margin: 0 0 6pt 0 !important; 
-      color: #fff; 
-      font-size: 14pt !important; 
+      display: block; width: 100%; text-align: center; padding: 6pt 0; border-radius: 6px; 
+      text-decoration: none; font-weight: bold; margin: 0 0 6pt 0 !important; 
+      color: #fff; font-size: 13pt !important; transition: all 0.2s ease;
     }
+    .btn:hover { filter: brightness(1.15); transform: translateY(-2px); }
   </style>
 </head>
 <body>
 
-  <div class="top-header">Di sản & Di tích Lịch sử Sơn La (STEM)</div>
-  <div id="map"></div>
+  <!-- BANNER -->
+  <div class="hero-banner">
+    <h1 class="hero-title">DU LỊCH KHÁM PHÁ DI TÍCH LỊCH SỬ VĂN HÓA DANH LAM THẮNG CẢNH TỈNH SƠN LA</h1>
+  </div>
+  
+  <!-- KHUNG 3 CỘT -->
+  <div class="content-wrapper">
+    
+    <!-- CỘT TRÁI: Ý NGHĨA DỰ ÁN -->
+    <div class="sidebar">
+      <h3 class="sidebar-title">📌 Giới Thiệu Dự Án</h3>
+      <p>Dự án <b>"Bản đồ số Di sản Sơn La"</b> được xây dựng nhằm số hóa và bảo tồn các giá trị lịch sử, văn hóa truyền thống của địa phương. Ứng dụng cung cấp một không gian tương tác trực quan, giúp người dùng dễ dàng khám phá các danh lam thắng cảnh ngay trên nền tảng trực tuyến.</p>
+      <h3 class="sidebar-title" style="margin-top: 12pt !important;">🎯 Mục Tiêu Đổi Mới</h3>
+      <p>Sản phẩm là tài liệu số hóa trực tiếp phục vụ bộ môn <b>Giáo dục địa phương</b>. Đổi mới phương pháp dạy học theo định hướng phát triển năng lực, khơi dậy tình yêu quê hương và ý thức bảo vệ di sản cho học sinh vùng đồng bào dân tộc thiểu số.</p>
+    </div>
+
+    <!-- CỘT GIỮA: BẢN ĐỒ -->
+    <div class="main-map-area">
+      <div id="map"></div>
+    </div>
+
+    <!-- CỘT PHẢI: CÔNG NGHỆ ÁP DỤNG -->
+    <div class="sidebar">
+      <h3 class="sidebar-title">🚀 Tích Hợp Công Nghệ</h3>
+      <p>Dự án ứng dụng mạnh mẽ các yếu tố công nghệ cốt lõi của thế kỷ 21, thể hiện tư duy tin học và chuyển đổi số trong giáo dục:</p>
+      <p><b>1. Bản đồ GIS:</b> Tích hợp dữ liệu tọa độ không gian thực (Leaflet & OpenStreetMap) giúp định vị GPS chính xác.</p>
+      <p><b>2. Trải nghiệm AR/3D:</b> Chuyển đổi mô hình di tích sang không gian Thực tế ảo tăng cường sinh động.</p>
+      <p><b>3. Tương tác đa phương tiện:</b> Trực tiếp liên kết Video thuyết minh và các bộ câu hỏi trắc nghiệm đánh giá kiến thức.</p>
+      <h3 class="sidebar-title" style="margin-top: 12pt !important;">💡 Định Hướng STEM</h3>
+      <p>Sản phẩm minh chứng rõ nét cho mô hình giáo dục STEM, kết hợp hài hòa giữa Khoa học (S), Công nghệ (T) và Văn hóa Lịch sử địa phương.</p>
+    </div>
+
+  </div>
 
   <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
-
   <script>
     var map = L.map('map').setView([21.3283, 103.9149], 9);
 
@@ -103,9 +203,9 @@
       navigator.geolocation.getCurrentPosition(function(position) {
         var userIcon = L.divIcon({
           className: 'user-gps-icon',
-          html: '<div style="background-color: #2980b9; width: 16px; height: 16px; border: 3px solid white; border-radius: 50%; box-shadow: 0 0 8px rgba(0,0,0,0.6);"></div>',
-          iconSize: [16, 16],
-          iconAnchor: [8, 8]
+          html: '<div style="background-color: #3498db; width: 18px; height: 18px; border: 3px solid #fff; border-radius: 50%; box-shadow: 0 0 10px rgba(0,0,0,0.5);"></div>',
+          iconSize: [18, 18],
+          iconAnchor: [9, 9]
         });
         L.marker([position.coords.latitude, position.coords.longitude], { icon: userIcon })
          .addTo(map)
@@ -130,28 +230,28 @@
       var customIcon = L.divIcon({
         className: 'custom-badge-icon',
         html: `
-          <div style="text-align: center;">
-            <div style="background: #d32f2f; width: 14px; height: 14px; border: 2px solid #fff; border-radius: 50%; margin: 0 auto 4pt auto; box-shadow: 0 0 4px rgba(0,0,0,0.4);"></div>
+          <div class="marker-wrapper">
             <div class="map-badge">
               <img src="${loc.img}" class="badge-img" alt="${loc.name}" onerror="this.src='https://picsum.photos/125/60?random=1'">
               <span class="marker-title">📍 ${loc.name}</span>
             </div>
+            <div class="pin-pointer"></div>
           </div>`,
         iconSize: [135, 110],
-        iconAnchor: [67, 14]
+        iconAnchor: [67, 95]
       });
 
       var marker = L.marker([loc.lat, loc.lng], { icon: customIcon }).addTo(map);
       var mapsUrl = `https://www.google.com/maps/dir/?api=1&destination=${loc.lat},${loc.lng}`;
 
       var popupHTML = `
-        <div style="width: 240px;">
-          <img src="${loc.img}" class="popup-img" alt="${loc.name}" onerror="this.src='https://picsum.photos/240/120?random=1'">
-          <p><b>📍 ${loc.tag}</b></p>
+        <div style="width: 250px;">
+          <img src="${loc.img}" class="popup-img" alt="${loc.name}" onerror="this.src='https://picsum.photos/250/130?random=1'">
+          <p><b>🏷️ ${loc.tag}</b></p>
           <h3>${loc.name}</h3>
           <p>${loc.desc}</p>
-          <a href="${loc.videoUrl}" target="_blank" class="btn" style="background: #c0392b;">▶ Xem Video Thuyết minh</a>
-          <a href="ar-ditich.html" class="btn" style="background: #d35400;">📷 Xem 3D / AR & Trắc nghiệm</a>
+          <a href="${loc.videoUrl}" target="_blank" class="btn" style="background: #e74c3c;">▶ Xem Video Thuyết minh</a>
+          <a href="ar-ditich.html" class="btn" style="background: #e67e22;">📷 Xem 3D / AR & Trắc nghiệm</a>
           <a href="${mapsUrl}" target="_blank" class="btn" style="background: #2980b9;">🚗 Chỉ đường đến đây</a>
         </div>`;
       marker.bindPopup(popupHTML);
